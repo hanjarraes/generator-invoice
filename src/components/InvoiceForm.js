@@ -85,17 +85,23 @@ class InvoiceForm extends React.Component {
     });
   };
 
-  onItemizedItemEdit = (evt) => {
-    const { id, name, value } = evt.target;
-    this.setState(prevState => {
-      const newItems = prevState.items.map(item => {
-        if (item.id === id && item.name === name) {
-          return { ...item, value };
+  onItemizedItemEdit(evt) {
+    const item = {
+      id: evt.target.id,
+      name: evt.target.name,
+      value: evt.target.value
+    };
+    const items = this.state.items.slice();
+    var newItems = items.map(function (items) {
+      for (var key in items) {
+        if (key === item.name && items.id === parseInt(item.id)) {
+          items[key] = item.value;
         }
-        return item;
-      });
-      return { items: newItems };
-    }, this.handleCalculateTotal);
+      }
+      return items;
+    });
+    this.setState({ items: newItems });
+    this.handleCalculateTotal();
   };
 
   editField = (event) => {
@@ -104,45 +110,47 @@ class InvoiceForm extends React.Component {
     });
     this.handleCalculateTotal();
   };
+
   onCurrencyChange = (selectedOption) => {
     this.setState(selectedOption);
   };
+
   openModal = (event) => {
     event.preventDefault()
     this.handleCalculateTotal()
     this.setState({ isOpen: true })
   };
+
   closeModal = (event) => this.setState({ isOpen: false });
   render() {
     return (
       <Form onSubmit={this.openModal}>
-        <Row>
-          <Col md={2} lg={1} />
-          <Col md={8} lg={10}>
+        <Row className='justify-content-center'>
+          <Col sm={12} md={8} lg={10}>
             <Card className="p-4 p-xl-5 my-3 my-xl-4 card-invoice">
-              <div className="d-flex flex-row align-items-start justify-content-between mb-3">
-                <div class="d-flex flex-column">
-                  <div className="d-flex flex-column">
-                    <div class="mb-2">
+              <Row className="mb-2">
+                <Col sm={12} md={6} >
+                  <Row className='align-items-center'>
+                    <Col sm={12} md={6} className='mb-3'>
                       <span className="fw-bold">Current&nbsp;Date:&nbsp;</span>
                       <span className="current-date">{new Date().toLocaleDateString()}</span>
-                    </div>
-                  </div>
-                  <div className="d-flex flex-row align-items-center">
-                    <span className="fw-bold d-block me-2">Due&nbsp;Date:</span>
-                    <Form.Control type="date" value={this.state.dateOfIssue} name={"dateOfIssue"} onChange={(event) => this.editField(event)} style={{
-                      maxWidth: '150px'
-                    }} required="required" />
-                  </div>
-                </div>
-                <div className="d-flex flex-row align-items-center">
+                    </Col>
+                    <Col sm={12} md={6} className="d-flex align-items-center mb-3">
+                      <span className="fw-bold d-block me-2">Due&nbsp;Date:</span>
+                      <Form.Control type="date" value={this.state.dateOfIssue} name={"dateOfIssue"} onChange={(event) => this.editField(event)} style={{
+                        maxWidth: '150px'
+                      }} required="required" />
+                    </Col>
+                  </Row>
+                </Col>
+                <Col sm={12} md={6} className="d-flex align-items-center justify-content-md-end mb-3">
                   <span className="fw-bold me-2">Invoice&nbsp;Number:&nbsp;</span>
                   <Form.Control type="number" value={this.state.invoiceNumber} name={"invoiceNumber"} onChange={(event) => this.editField(event)} min="1" style={{
                     maxWidth: '70px'
                   }} required="required" />
-                </div>
-              </div>
-              <hr className="my-4" />
+                </Col>
+              </Row>
+              <div className="horizontal-line mb-4" />
               <Row className="mb-3">
                 <Col>
                   <Form.Label className="fw-bold">Bill to:</Form.Label>
@@ -280,13 +288,20 @@ class InvoiceForm extends React.Component {
               </Row>
               <hr className="my-4" />
               <Form.Label className="fw-bold">Notes:</Form.Label>
-              <Form.Control placeholder="Thanks for your business!" name="notes" value={this.state.notes} onChange={(event) => this.editField(event)} as="textarea" className="my-2" rows={1} />
+              <Form.Control
+                style={{ height: 100 }}
+                placeholder="Thanks for your business!"
+                name="notes"
+                value={this.state.notes}
+                onChange={(event) => this.editField(event)}
+                as="textarea"
+                className="my-2"
+                rows={1} />
               <div>
                 <Button variant="primary" type="submit" className="d-block mt-3 float-end">Review Invoice</Button>
               </div>
             </Card>
           </Col>
-          <Col md={2} lg={1} />
         </Row>
         <InvoiceModal
           showModal={this.state.isOpen}
