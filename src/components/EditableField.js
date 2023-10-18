@@ -12,7 +12,7 @@ const EditableField = ({ cellData, onItemizedItemEdit }) => {
         >
           <span
             className="border border-2 border-secondary rounded-circle d-flex align-items-center justify-content-center small"
-            style={{ width: '20px', height: '20px' }}
+            style={{ width: '20px', height: '20px', padding: '12px' }}
           >
             {cellData.leading}
           </span>

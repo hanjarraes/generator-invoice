@@ -66,9 +66,15 @@ hr {
 }
 
 .table th {
-  border-top: 1px solid #0000001a;
+  border-top: 1px solid transparent; 
   border-bottom: 1px solid #0000001a;
   border-bottom-color: #0000001a !important
+}
+
+.btn-primary {
+  color: #fff;
+  background-color: #5c8ed9;
+  border-color: #5c8ed9;
 }
 
 .table td {
