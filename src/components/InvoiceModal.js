@@ -8,6 +8,7 @@ import Modal from 'react-bootstrap/Modal';
 import { BiPaperPlane, BiCloudDownload } from "react-icons/bi";
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import Logo from '../logo-Alurnews-02.png'
 
 const GenerateInvoice = () => {
   html2canvas(document.querySelector("#invoiceCapture")).then((canvas) => {
@@ -31,16 +32,16 @@ const InvoiceModal = ({ showModal, closeModal, info, currency, total, items, sub
     <div>
       <Modal show={showModal} onHide={closeModal} size="lg" centered>
         <div id="invoiceCapture">
-          <div className="d-flex flex-row justify-content-between align-items-start bg-light w-100 p-4">
-            <div className="w-100">
-              <h4 className="fw-bold my-2">{info.billFrom || 'John Uberbacher'}</h4>
-              <h6 className="fw-bold text-secondary mb-1">
-                Invoice #: {info.invoiceNumber || ''}
-              </h6>
+          <div className="bg-light w-100 p-4 d-flex justify-content-between">
+            <div>
+              <img src={Logo} alt='logo' style={{ width: 300 }} />
+              <div className='header-modal'>
+                <span>Mega Legenda 2-D2-01, Batam Kota,Batam,Kepri</span>
+                <span>Email: alurnews01@gmail.com - Hp: 081375016588</span>
+              </div>
             </div>
-            <div className="text-end ms-4">
-              <h6 className="fw-bold mt-1 mb-2">Amount Due:</h6>
-              <h5 className="fw-bold text-secondary"> {currency} {total}</h5>
+            <div>
+              Invoice #: {info.invoiceNumber || ''}
             </div>
           </div>
           <div className="p-4">
@@ -88,39 +89,43 @@ const InvoiceModal = ({ showModal, closeModal, info, currency, total, items, sub
                 })}
               </tbody>
             </Table>
-            <Table>
-              <tbody>
-                <tr>
-                  <td>&nbsp;</td>
-                  <td>&nbsp;</td>
-                  <td>&nbsp;</td>
-                </tr>
-                <tr className="text-end">
-                  <td></td>
-                  <td className="fw-bold" style={{ width: '100px' }}>SUBTOTAL</td>
-                  <td className="text-end" style={{ width: '100px' }}>{currency} {parseFloat(subTotal).toLocaleString()}</td>
-                </tr>
+            <Row className='my-5'>
+              <Col md={8}>
+              <div className='modal-text-info'>
+                  <span>Payment Intruction</span>
+                  <div className='item-total'>PT. ALUR,EDIA FACRI SUKSES</div>
+                </div>
+                <div className='modal-text-info'>
+                  <span>BANK TRANSFER</span>
+                  <div className='item-total'>3262452252/Bank BCA</div>
+                  <div className='item-total'>PT. ALUR,EDIA FACRI SUKSES</div>
+                </div>
+              </Col>
+              <Col md={4}>
+                <div className='modal-text-item'>
+                  <span>SUBTOTAL</span>
+                  <div className='item-total'>{currency} {parseFloat(subTotal).toLocaleString()}</div>
+                </div>
                 {taxAmmount !== '0.00' &&
-                  <tr className="text-end">
-                    <td></td>
-                    <td className="fw-bold" style={{ width: '100px' }}>TAX</td>
-                    <td className="text-end" style={{ width: '100px' }}>{currency} {parseFloat(taxAmmount).toLocaleString()}</td>
-                  </tr>
+                  <div className='modal-text-item'>
+                    <span>TAX</span>
+                    <div className='item-total'>{currency} {parseFloat(taxAmmount).toLocaleString()}</div>
+                  </div>
                 }
                 {discountAmmount !== '0.00' &&
-                  <tr className="text-end">
-                    <td></td>
-                    <td className="fw-bold" style={{ width: '100px' }}>DISCOUNT</td>
-                    <td className="text-end" style={{ width: '100px' }}>{currency} { parseFloat(discountAmmount).toLocaleString()}</td>
-                  </tr>
+                  <div className='modal-text-item'>
+                    <span>DISCOUNT</span>
+                    <div className='item-total'>{currency} {parseFloat(discountAmmount).toLocaleString()}</div>
+                  </div>
                 }
-                <tr className="text-end">
-                  <td></td>
-                  <td className="fw-bold" style={{ width: '100px' }}>TOTAL</td>
-                  <td className="text-end" style={{ width: '100px' }}>{currency} {total}</td>
-                </tr>
-              </tbody>
-            </Table>
+
+                <div className='modal-text-item'>
+                  <span>TOTAL</span>
+                  <div>{currency} {total}</div>
+                </div>
+
+              </Col>
+            </Row>
             {info.notes &&
               <div className="bg-light py-3 px-4 rounded">
                 {info.notes}
