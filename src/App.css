@@ -146,3 +146,12 @@ hr {
 .modal-text-info div {
   font-weight: 500;
 }
+
+.modal-signature{
+  font-weight: 500;
+}
+
+.modal-signature span{
+  font-weight: 700;
+  margin-bottom: 5rem;
+}

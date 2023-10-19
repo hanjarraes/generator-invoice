@@ -30,6 +30,7 @@ class InvoiceForm extends React.Component {
       taxRate: '',
       taxAmmount: '0',
       discountRate: '',
+      isSignature: false,
       discountAmmount: '0'
     };
     this.state.items = [
@@ -50,6 +51,11 @@ class InvoiceForm extends React.Component {
     var index = this.state.items.indexOf(items);
     this.state.items.splice(index, 1);
     this.setState(this.state.items);
+  };
+  handleIsSignatureChange = () => {
+    this.setState(prevState => ({
+      isSignature: !prevState.isSignature,
+    }));
   };
   handleAddEvent(evt) {
     var id = this.state.items.length + 1
@@ -72,10 +78,10 @@ class InvoiceForm extends React.Component {
       return acc + (parseFloat(item.price) * parseInt(item.quantity));
     }, subTotal);
 
-    const subTotalFloat = parseFloat(subTotal).toFixed(2);
-    const taxAmountFloat = (subTotalFloat * (this.state.taxRate / 100)).toFixed(2);
-    const discountAmountFloat = (subTotalFloat * (this.state.discountRate / 100)).toFixed(2);
-    const totalFloat = (subTotalFloat - discountAmountFloat + parseFloat(taxAmountFloat)).toFixed(2);
+    const subTotalFloat = parseFloat(subTotal);
+    const taxAmountFloat = (subTotalFloat * (this.state.taxRate / 100));
+    const discountAmountFloat = (subTotalFloat * (this.state.discountRate / 100));
+    const totalFloat = (subTotalFloat - discountAmountFloat + parseFloat(taxAmountFloat));
 
     this.setState({
       subTotal: parseFloat(subTotalFloat).toLocaleString(),
@@ -122,7 +128,11 @@ class InvoiceForm extends React.Component {
   };
 
   closeModal = (event) => this.setState({ isOpen: false });
+
+
   render() {
+  console.log(this.state.isSignature)
+
     return (
       <Form onSubmit={this.openModal}>
         <Row className='justify-content-center'>
@@ -297,8 +307,20 @@ class InvoiceForm extends React.Component {
                 as="textarea"
                 className="my-2"
                 rows={1} />
-              <div>
-                <Button variant="primary" type="submit" className="d-block mt-3 float-end">Review Invoice</Button>
+              <div className='mt-3 d-flex align-items-center justify-content-end'>
+                <div className="form-check pe-4">
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    value={this.state.isSignature}
+                    onChange={this.handleIsSignatureChange}
+                    id="flexCheckDefault"
+                  />
+                  <label className="form-check-label" htmlFor="flexCheckDefault">
+                    With Signature
+                  </label>
+                </div>
+                <Button variant="primary" type="submit">Review Invoice</Button>
               </div>
             </Card>
           </Col>
@@ -306,6 +328,7 @@ class InvoiceForm extends React.Component {
         <InvoiceModal
           showModal={this.state.isOpen}
           closeModal={this.closeModal}
+          isSignature={this.state.isSignature}
           info={this.state}
           items={this.state.items}
           currency={this.state.currency}

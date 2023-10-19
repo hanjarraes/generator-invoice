@@ -27,7 +27,7 @@ const GenerateInvoice = () => {
   });
 }
 
-const InvoiceModal = ({ showModal, closeModal, info, currency, total, items, subTotal, taxAmmount, discountAmmount }) => {
+const InvoiceModal = ({ showModal, closeModal, info, currency, total, items, subTotal, taxAmmount, discountAmmount, isSignature }) => {
   return (
     <div>
       <Modal show={showModal} onHide={closeModal} size="lg" centered>
@@ -91,7 +91,7 @@ const InvoiceModal = ({ showModal, closeModal, info, currency, total, items, sub
             </Table>
             <Row className='my-5'>
               <Col md={8}>
-              <div className='modal-text-info'>
+                <div className='modal-text-info'>
                   <span>Payment Intruction</span>
                   <div className='item-total'>PT. ALUR,EDIA FACRI SUKSES</div>
                 </div>
@@ -130,6 +130,19 @@ const InvoiceModal = ({ showModal, closeModal, info, currency, total, items, sub
               <div className="bg-light py-3 px-4 rounded">
                 {info.notes}
               </div>}
+
+            {isSignature === true &&
+              <Row className='mt-4'>
+                <Col md={8} />
+                <Col md={4} className='modal-signature'>
+                  <div>Thanks You & Regards, </div>
+                  <span>AlurNews.com</span>
+                  <div style={{ marginTop: '100px' }}>Harianto</div>
+                  <div>Direktur</div>
+                </Col>
+              </Row>
+            }
+
           </div>
         </div>
         <div className="pb-4 px-4">
