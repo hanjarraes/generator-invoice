@@ -6,17 +6,14 @@ import { BiTrash } from "react-icons/bi";
 import EditableField from './EditableField';
 
 const InvoiceItem = ({ onItemizedItemEdit, currency, onRowDel, onRowAdd, items }) => {
-  const itemTable = items.map(item => (
-    <>
+  const itemTable = items.map((item, idx) => (
       <ItemRow
         onItemizedItemEdit={onItemizedItemEdit}
         item={item}
         onDelEvent={() => onRowDel(item)}
-        key={item.id}
+        key={item.id + idx}
         currency={currency}
       />
-    </>
-
   ));
 
   return (

@@ -5,7 +5,7 @@ import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
 import Modal from 'react-bootstrap/Modal';
-import { BiPaperPlane, BiCloudDownload } from "react-icons/bi";
+import {   BiCloudDownload } from "react-icons/bi";
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 // import Logo from '../logo-Alurnews-02.png'
@@ -27,18 +27,30 @@ const GenerateInvoice = () => {
   });
 }
 
-const InvoiceModal = ({ showModal, closeModal, info, currency, total, items, subTotal, taxAmmount, discountAmmount, isSignature }) => {
+const InvoiceModal = ({
+  showModal,
+  closeModal,
+  info,
+  currency,
+  total,
+  items,
+  subTotal,
+  taxAmmount,
+  discountAmmount,
+  isSignature,
+  Logo,
+  nameBank,
+  idBank
+}) => {
   return (
     <div>
       <Modal show={showModal} onHide={closeModal} size="lg" centered>
         <div id="invoiceCapture">
           <div className="bg-light w-100 p-4 d-flex justify-content-between">
             <div>
-              {/* <img src={Logo} alt='logo' style={{ width: 300 }} /> */}
-              <div className='header-modal'>
-                <span>Mega Legenda 2-D2-01, Batam Kota,Batam,Kepri</span>
-                <span>Email: alurnews01@gmail.com - Hp: 081375016588</span>
-              </div>
+              {Logo &&
+                <img src={Logo} alt='logo' style={{ width: 200 }} />
+              }
             </div>
             <div>
               Invoice #: {info.invoiceNumber || ''}
@@ -73,7 +85,7 @@ const InvoiceModal = ({ showModal, closeModal, info, currency, total, items, sub
                 </tr>
               </thead>
               <tbody>
-                {items.map((item, i) => {
+                {items?.map((item, i) => {
                   return (
                     <tr id={i} key={i}>
                       <td style={{ width: '70px' }}>
@@ -92,13 +104,9 @@ const InvoiceModal = ({ showModal, closeModal, info, currency, total, items, sub
             <Row className='my-5'>
               <Col md={8}>
                 <div className='modal-text-info'>
-                  <span>Payment Intruction</span>
-                  <div className='item-total'>PT. ALUR,EDIA FACRI SUKSES</div>
-                </div>
-                <div className='modal-text-info'>
                   <span>BANK TRANSFER</span>
-                  <div className='item-total'>3262452252/Bank BCA</div>
-                  <div className='item-total'>PT. ALUR,EDIA FACRI SUKSES</div>
+                  <div className='item-total'>{nameBank}</div>
+                  <div className='item-total'>{idBank}</div>
                 </div>
               </Col>
               <Col md={4}>
@@ -148,14 +156,14 @@ const InvoiceModal = ({ showModal, closeModal, info, currency, total, items, sub
         <div className="pb-4 px-4">
           <Row>
             <Col md={6}>
-              <Button variant="primary" className="d-block w-100" onClick={GenerateInvoice}>
+              {/* <Button variant="primary" className="d-block w-100" onClick={GenerateInvoice}>
                 <BiPaperPlane style={{ width: '15px', height: '15px', marginTop: '-3px' }} className="me-2" />Send Invoice
-              </Button>
+              </Button> */}
             </Col>
             <Col md={6}>
               <Button variant="outline-primary" className="d-block w-100 mt-3 mt-md-0" onClick={GenerateInvoice}>
                 <BiCloudDownload style={{ width: '16px', height: '16px', marginTop: '-3px' }} className="me-2" />
-                Download Copy
+                Download
               </Button>
             </Col>
           </Row>

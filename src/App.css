@@ -61,12 +61,12 @@ hr {
 
 .horizontal-line {
   width: 100%;
-  height: 2px; 
+  height: 2px;
   background-color: #f5f7f9;
 }
 
 .table th {
-  border-top: 1px solid transparent; 
+  border-top: 1px solid transparent;
   border-bottom: 1px solid #0000001a;
   border-bottom-color: #0000001a !important
 }
@@ -118,4 +118,76 @@ hr {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+}
+
+.header-modal {
+  display: flex;
+  flex-direction: column;
+  font-weight: 600;
+  padding-left: 20px;
+}
+
+.modal-text-item {
+  display: flex;
+  justify-content: space-between;
+}
+
+.modal-text-item span {
+  font-weight: 700;
+}
+
+.modal-text-info {
+  margin-bottom: 20px;
+}
+
+.modal-text-info span {
+  font-weight: 700;
+}
+
+.modal-text-info div {
+  font-weight: 500;
+}
+
+.modal-signature {
+  font-weight: 500;
+}
+
+.modal-signature span {
+  font-weight: 700;
+  margin-bottom: 5rem;
+}
+
+.uploudImg {
+  border: 1px solid #5c8ed9;
+  width: max-content;
+  border-radius: 10px;
+  font-size: 24px;
+  font-weight: 500;
+  color: #5c8ed9;
+  transition: all 0.5s;
+}
+.uploudImg:hover{
+  background: #5c8ed9;
+  color: #fff;
+  border: 1px solid #fff;
+  transition: all 0.5s;
+}
+
+
+.uploudImg label {
+  padding: 10px 0;
+  cursor: pointer;
+  width: 200px;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.uploudImg img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 8px;
+  padding: 10px;
 }
