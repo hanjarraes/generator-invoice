@@ -7,9 +7,9 @@ An Invoice creator project built with React. Add itemized items, configure quant
 https://invoice.raess.fun/
 
 ### Screenshots
-<img src="https://imgur.com/rWiRj47" style="max-width: 100px; width: 100%; height: auto;">
-<img src="https://imgur.com/rWiRj47" style="max-width: 100px; width: 100%; height: auto;">
-<img src="https://imgur.com/1EouOOn" style="max-width: 100px; width: 100%; height: auto;">
+<img src="https://i.imgur.com/rWiRj47.png" style="max-width: 100px; width: 100%; height: auto;">
+<img src="https://i.imgur.com/OCIdDpZ.jpg" style="max-width: 100px; width: 100%; height: auto;">
+<img src="https://i.imgur.com/1EouOOn.png" style="max-width: 100px; width: 100%; height: auto;">
 
 ### Installation
 
