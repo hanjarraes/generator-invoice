@@ -5,10 +5,11 @@ import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
 import Modal from 'react-bootstrap/Modal';
-import { BiPaperPlane, BiCloudDownload } from "react-icons/bi";
+import { BiPaperPlane } from "react-icons/bi";
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
-import Logo from '../logo-Alurnews-02.png'
+import Logo from '../../logo-Alurnews-02.png'
+import "./style.scss";
 
 const GenerateInvoice = () => {
   html2canvas(document.querySelector("#invoiceCapture")).then((canvas) => {
@@ -27,7 +28,18 @@ const GenerateInvoice = () => {
   });
 }
 
-const InvoiceModal = ({ showModal, closeModal, info, currency, total, items, subTotal, taxAmmount, discountAmmount, isSignature }) => {
+const InvoiceModal = ({
+  showModal,
+  closeModal,
+  info,
+  currency,
+  total,
+  items,
+  subTotal,
+  taxAmmount,
+  discountAmmount,
+  tableDetail
+}) => {
   return (
     <div>
       <Modal show={showModal} onHide={closeModal} size="lg" centered>
@@ -63,7 +75,7 @@ const InvoiceModal = ({ showModal, closeModal, info, currency, total, items, sub
                 <div>{info.dateOfIssue || ''}</div>
               </Col>
             </Row>
-            <Table className="mb-0">
+            <Table className="mb-0 table-invoice">
               <thead>
                 <tr>
                   <th>QTY</th>
@@ -104,18 +116,18 @@ const InvoiceModal = ({ showModal, closeModal, info, currency, total, items, sub
               <Col md={4}>
                 <div className='modal-text-item'>
                   <span>SUBTOTAL</span>
-                  <div className='item-total'>{currency} {parseFloat(subTotal).toLocaleString()}</div>
+                  <div className='item-total'>{currency} {subTotal}</div>
                 </div>
                 {taxAmmount !== '0.00' &&
                   <div className='modal-text-item'>
                     <span>TAX</span>
-                    <div className='item-total'>{currency} {parseFloat(taxAmmount).toLocaleString()}</div>
+                    <div className='item-total'>{currency} {taxAmmount}</div>
                   </div>
                 }
                 {discountAmmount !== '0.00' &&
                   <div className='modal-text-item'>
                     <span>DISCOUNT</span>
-                    <div className='item-total'>{currency} {parseFloat(discountAmmount).toLocaleString()}</div>
+                    <div className='item-total'>{currency} {discountAmmount}</div>
                   </div>
                 }
 
@@ -131,37 +143,35 @@ const InvoiceModal = ({ showModal, closeModal, info, currency, total, items, sub
                 {info.notes}
               </div>}
 
-            {isSignature === true &&
-              <Row className='mt-4'>
-                <Col md={8} />
-                <Col md={4} className='modal-signature'>
-                  <div>Thanks You & Regards, </div>
-                  <span>AlurNews.com</span>
-                  <div style={{ marginTop: '100px' }}>Harianto</div>
-                  <div>Direktur</div>
-                </Col>
-              </Row>
-            }
+            <Row className='mt-4'>
+              <Col md={8} />
+              <Col md={4} className='modal-signature'>
+                <div>Thanks You & Regards, </div>
+                <span>AlurNews.com</span>
+                <div style={{ marginTop: '100px' }}>Harianto</div>
+                <div>Direktur</div>
+              </Col>
+            </Row>
 
           </div>
         </div>
         <div className="pb-4 px-4">
           <Row>
-            <Col md={6}>
-              <Button variant="primary" className="d-block w-100" onClick={GenerateInvoice}>
-                <BiPaperPlane style={{ width: '15px', height: '15px', marginTop: '-3px' }} className="me-2" />Send Invoice
-              </Button>
-            </Col>
-            <Col md={6}>
-              <Button variant="outline-primary" className="d-block w-100 mt-3 mt-md-0" onClick={GenerateInvoice}>
-                <BiCloudDownload style={{ width: '16px', height: '16px', marginTop: '-3px' }} className="me-2" />
-                Download Copy
-              </Button>
-            </Col>
+            {tableDetail ?
+              <Col md={6}>
+                <Button variant="primary" className="d-block w-100" onClick={closeModal} onKeyDown={closeModal} onKeyUp={closeModal}>
+                  <BiPaperPlane style={{ width: '15px', height: '15px', marginTop: '-3px' }} className="me-2" />Close
+                </Button>
+              </Col>
+              :
+              <Col md={6}>
+                <Button variant="primary" className="d-block w-100" onClick={GenerateInvoice}>
+                  <BiPaperPlane style={{ width: '15px', height: '15px', marginTop: '-3px' }} className="me-2" />Send Invoice
+                </Button>
+              </Col>}
           </Row>
         </div>
       </Modal>
-      <hr className="mt-4 mb-3" />
     </div>
   );
 }

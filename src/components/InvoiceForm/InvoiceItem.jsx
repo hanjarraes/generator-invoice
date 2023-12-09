@@ -7,16 +7,13 @@ import EditableField from './EditableField';
 
 const InvoiceItem = ({ onItemizedItemEdit, currency, onRowDel, onRowAdd, items }) => {
   const itemTable = items.map(item => (
-    <>
-      <ItemRow
-        onItemizedItemEdit={onItemizedItemEdit}
-        item={item}
-        onDelEvent={() => onRowDel(item)}
-        key={item.id}
-        currency={currency}
-      />
-    </>
-
+    <ItemRow
+      onItemizedItemEdit={onItemizedItemEdit}
+      item={item}
+      onDelEvent={() => onRowDel(item)}
+      key={item.id}
+      currency={currency}
+    />
   ));
 
   return (
@@ -45,7 +42,7 @@ const ItemRow = ({ onItemizedItemEdit, item, onDelEvent, currency }) => {
   };
 
   return (
-    <tr>
+    <tr >
       <td style={{ width: '100%' }}>
         <EditableField
           onItemizedItemEdit={onItemizedItemEdit}

@@ -1,6 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
@@ -9,6 +8,7 @@ import Card from 'react-bootstrap/Card';
 import InvoiceItem from './InvoiceItem';
 import InvoiceModal from './InvoiceModal';
 import InputGroup from 'react-bootstrap/InputGroup';
+import "./style.scss";
 
 const InvoiceForm = () => {
   const [mainState, setMainState] = useState({
@@ -31,7 +31,6 @@ const InvoiceForm = () => {
     taxRate: '',
     taxAmount: '0',
     discountRate: '',
-    isSignature: false,
     discountAmount: '0'
   });
   const [items, setItems] = useState([
@@ -82,12 +81,11 @@ const InvoiceForm = () => {
     const discountAmountFloat = (subTotalFloat * (parseFloat(mainState.discountRate === '' ? '0.0' : mainState.discountRate) / 100));
     const totalFloat = (subTotalFloat - discountAmountFloat + parseFloat(taxAmountFloat));
 
-    console.log(totalFloat, mainState.taxRate, mainState.discountRate, subTotalFloat)
 
     setMainState(prevState => ({
       ...prevState,
       subTotal: subTotalFloat.toLocaleString(),
-      taxAmount: taxAmountFloat,
+      taxAmount: taxAmountFloat.toLocaleString(),
       discountAmount: discountAmountFloat.toLocaleString(),
       total: totalFloat.toLocaleString()
     }));
@@ -154,6 +152,7 @@ const InvoiceForm = () => {
                     <Col sm={12} md={6} className="d-flex align-items-center mb-3">
                       <span className="fw-bold d-block me-2">Due&nbsp;Date:</span>
                       <Form.Control
+                        className="form-control-invoice"
                         type="date"
                         value={mainState.dateOfIssue}
                         name={"dateOfIssue"}
@@ -166,6 +165,7 @@ const InvoiceForm = () => {
                 <Col sm={12} md={6} className="d-flex align-items-center justify-content-md-end mb-3">
                   <span className="fw-bold me-2">Invoice&nbsp;Number:&nbsp;</span>
                   <Form.Control
+                    className="form-control-invoice"
                     type="number"
                     value={mainState.invoiceNumber}
                     name={"invoiceNumber"}
@@ -178,32 +178,32 @@ const InvoiceForm = () => {
                 <Col>
                   <Form.Label className="fw-bold">Bill to:</Form.Label>
                   <Form.Control
+                    className="form-control-invoice my-2"
                     placeholder={"Who is this invoice to?"}
                     rows={3}
                     value={mainState.billTo}
                     type="text"
                     name="billTo"
-                    className="my-2"
                     onChange={editField}
                     autoComplete="name"
                     required
                   />
                   <Form.Control
+                    className="form-control-invoice my-2"
                     placeholder={"Email address"}
                     value={mainState.billToEmail}
                     type="email"
                     name="billToEmail"
-                    className="my-2"
                     onChange={editField}
                     autoComplete="email"
                     required
                   />
                   <Form.Control
+                    className="form-control-invoice my-2"
                     placeholder={"Billing address"}
                     value={mainState.billToAddress}
                     type="text"
                     name="billToAddress"
-                    className="my-2"
                     autoComplete="address"
                     onChange={editField}
                     required
@@ -212,32 +212,32 @@ const InvoiceForm = () => {
                 <Col>
                   <Form.Label className="fw-bold">Bill from:</Form.Label>
                   <Form.Control
+                    className="form-control-invoice my-2"
                     placeholder={"Who is this invoice from?"}
                     rows={3}
                     value={mainState.billFrom}
                     type="text"
                     name="billFrom"
-                    className="my-2"
                     onChange={editField}
                     autoComplete="name"
                     required
                   />
                   <Form.Control
+                    className="form-control-invoice my-2"
                     placeholder={"Email address"}
                     value={mainState.billFromEmail}
                     type="email"
                     name="billFromEmail"
-                    className="my-2"
                     onChange={editField}
                     autoComplete="email"
                     required
                   />
                   <Form.Control
+                    className="form-control-invoice my-2"
                     placeholder={"Billing address"}
                     value={mainState.billFromAddress}
                     type="text"
                     name="billFromAddress"
-                    className="my-2"
                     autoComplete="address"
                     onChange={editField}
                     required
@@ -249,6 +249,7 @@ const InvoiceForm = () => {
                   <Form.Group className="mb-3">
                     <InputGroup className="my-1 flex-nowrap">
                       <Form.Control
+                        className="form-control-invoice bg-white border"
                         name="taxRate"
                         type="number"
                         placeholder="Tax rate"
@@ -257,7 +258,6 @@ const InvoiceForm = () => {
                         max="100"
                         value={mainState.taxRate}
                         onChange={editField}
-                        className="bg-white border"
                       />
                       <InputGroup.Text className="bg-light fw-bold text-secondary small">
                         %
@@ -269,6 +269,7 @@ const InvoiceForm = () => {
                   <Form.Group className="mb-3">
                     <InputGroup className="my-1 flex-nowrap">
                       <Form.Control
+                        className="form-control-invoice bg-white border"
                         name="discountRate"
                         type="number"
                         placeholder="Discount rate"
@@ -277,7 +278,6 @@ const InvoiceForm = () => {
                         max="100"
                         value={mainState.discountRate}
                         onChange={editField}
-                        className="bg-white border"
                       />
                       <InputGroup.Text className="bg-light fw-bold text-secondary small">
                         %
@@ -305,13 +305,14 @@ const InvoiceForm = () => {
                   </Form.Group>
                 </Col>
               </Row>
-
+              
               <InvoiceItem
                 onItemizedItemEdit={onItemizedItemEdit}
                 onRowAdd={handleAddEvent}
                 onRowDel={handleRowDel}
                 currency={mainState.currency}
                 items={items} />
+
               <Row className="mt-4 justify-content-end">
                 <Col lg={6}>
                   <div className="d-flex flex-row align-items-start justify-content-between">
@@ -347,13 +348,13 @@ const InvoiceForm = () => {
               <hr className="my-4" />
               <Form.Label className="fw-bold">Notes:</Form.Label>
               <Form.Control
+                className="form-control-invoice my-2"
                 style={{ height: 100 }}
                 placeholder="Thanks for your business!"
                 name="notes"
                 value={mainState.notes}
                 onChange={editField}
                 as="textarea"
-                className="my-2"
                 rows={1} />
               <div className='mt-3 d-flex align-items-center justify-content-end'>
                 <div className="form-check pe-4">
@@ -376,7 +377,6 @@ const InvoiceForm = () => {
         <InvoiceModal
           showModal={mainState.isOpen}
           closeModal={closeModal}
-          isSignature={mainState.isSignature}
           info={mainState}
           items={items}
           currency={mainState.currency}

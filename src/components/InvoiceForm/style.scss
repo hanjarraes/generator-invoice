@@ -1,0 +1,136 @@
+.App-link {
+  color: #61dafb;
+}
+
+.btn-light {
+  border-color: #dedede;
+
+  &:hover {
+    border-color: #dedede;
+    background-color: #f3f3f3;
+  }
+}
+
+.input-group {
+  height: 40px;
+}
+
+.card-invoice {
+  box-shadow: rgb(25 123 231 / 40%) 0px 0px 0px 2px, rgb(221 0 0 / 65%) 0px 4px 6px -1px, rgb(247 27 27 / 8%) 0px 1px 0px inset;
+}
+
+.shadow {
+  box-shadow: 0 .1rem .1rem rgba(0, 0, 0, .05) !important;
+}
+
+.modal-content,
+.card {
+  overflow: hidden;
+  border-radius: 0.756rem;
+}
+
+hr {
+  opacity: 0.1;
+}
+
+.horizontal-line {
+  width: 100%;
+  height: 2px;
+  background-color: #f5f7f9;
+}
+
+.table-invoice {
+  th {
+    border-top: 1px solid transparent;
+    border-bottom: 1px solid #0000001a;
+    border-bottom-color: #0000001a !important;
+  }
+
+  td {
+    text-align: left;
+  }
+
+  tr {
+    th:first-child,
+    td:first-child {
+      padding-left: 0;
+    }
+
+    th:last-child,
+    td:last-child {
+      padding-right: 0;
+    }
+  }
+}
+
+.btn-primary {
+  color: #fff;
+  background-color: #5c8ed9;
+  border-color: #5c8ed9;
+}
+
+.form-control-invoice {
+  background: #f5f7f9;
+  font-weight: 400;
+  padding: .5rem .75rem;
+  height: 40px;
+  border: none;
+
+  &:hover {
+    background: #f5f7f9;
+  }
+
+  &::placeholder,
+  &::-ms-input-placeholder,
+  &:-ms-input-placeholder {
+    color: #9fa8b0;
+  }
+
+  &:focus {
+    background: #f5f7f9;
+  }
+}
+
+#invoiceCapture {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.header-modal {
+  display: flex;
+  flex-direction: column;
+  font-weight: 600;
+  padding-left: 20px;
+}
+
+.modal-text-item {
+  display: flex;
+  justify-content: space-between;
+
+  span {
+    font-weight: 700;
+  }
+}
+
+.modal-text-info {
+  margin-bottom: 20px;
+
+  span {
+    font-weight: 700;
+  }
+
+  div {
+    font-weight: 500;
+  }
+}
+
+.modal-signature {
+  font-weight: 500;
+
+  span {
+    font-weight: 700;
+    margin-bottom: 5rem;
+  }
+}
