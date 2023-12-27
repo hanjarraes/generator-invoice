@@ -8,7 +8,7 @@ import Invoice from "../pages/Invoice";
 
 const appRoutes = [
   {
-    path: "/dashboard",
+    path: "/",
     element: <Dashboard />,
     state: "dashboard",
     sidebarProps: {

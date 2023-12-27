@@ -23,20 +23,20 @@ const Login = () => {
   };
 
   return (
-    <div classNaame="container-fluid ps-md-0">
-      <div classNaame="row g-0">
-        <div classNaame="d-none d-md-flex col-md-4 col-lg-6 bg-image"></div>
-        <div classNaame="col-md-8 col-lg-6">
-          <div classNaame="login d-flex align-items-center py-5">
-            <div classNaame="container">
-              <div classNaame="row">
-                <div classNaame="col-md-9 col-lg-8 mx-auto">
-                  <h3 classNaame="login-heading mb-4">Welcome back!</h3>
+    <div className="container-fluid ps-md-0">
+      <div className="row g-0">
+        <div className="d-none d-md-flex col-md-4 col-lg-6 bg-image"></div>
+        <div className="col-md-8 col-lg-6">
+          <div className="login d-flex align-items-center py-5">
+            <div className="container">
+              <div className="row">
+                <div className="col-md-9 col-lg-8 mx-auto">
+                  <h3 className="login-heading mb-4">Welcome back!</h3>
                   <form onSubmit={handleSubmit}>
-                    <div classNaame="form-floating mb-3">
+                    <div className="form-floating mb-3">
                       <input
                         type="email"
-                        classNaame="form-control"
+                        className="form-control"
                         id="floatingInput"
                         placeholder="name@example.com"
                         required
@@ -45,10 +45,10 @@ const Login = () => {
                       />
                       <label for="floatingInput">Email address</label>
                     </div>
-                    <div classNaame="form-floating mb-3">
+                    <div className="form-floating mb-3">
                       <input
                         type="password"
-                        classNaame="form-control"
+                        className="form-control"
                         id="floatingPassword"
                         placeholder="Password"
                         required
@@ -60,24 +60,24 @@ const Login = () => {
                       <label for="floatingPassword">Password</label>
                     </div>
 
-                    <div classNaame="form-check mb-3">
+                    <div className="form-check mb-3">
                       <input
-                        classNaame="form-check-input"
+                        className="form-check-input"
                         type="checkbox"
                         value=""
                         id="rememberPasswordCheck"
                       />
                       <label
-                        classNaame="form-check-label"
+                        className="form-check-label"
                         for="rememberPasswordCheck"
                       >
                         Remember password
                       </label>
                     </div>
 
-                    <div classNaame="d-grid">
+                    <div className="d-grid">
                       <button
-                        classNaame="btn btn-lg btn-primary btn-login text-uppercase fw-bold mb-2"
+                        className="btn btn-lg btn-primary btn-login text-uppercase fw-bold mb-2"
                         type="submit"
                       >
                         Sign in

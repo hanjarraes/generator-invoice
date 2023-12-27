@@ -1,0 +1,40 @@
+.custom-dialog {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    .MuiDialog-paper {
+        width: 100vw;
+    }
+
+    .content-modal {
+        background-color: #fff;
+        height: 100%;
+        width: 100%;
+
+        .route-mobile {
+            font-size: 36px;
+            font-weight: 600;
+        }
+    }
+}
+
+
+@media (max-width: 500px) {
+    .custom-dialog {
+        .content-modal {}
+    }
+}
+
+
+@media (max-width: 414px) {
+    .custom-dialog {
+        .content-modal {}
+    }
+}
+
+@media (max-width: 414px) {
+    .custom-dialog {
+        .content-modal {}
+    }
+}

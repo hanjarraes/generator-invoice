@@ -130,13 +130,15 @@ const Table = ({ columns, data }) => {
             {currentItems.map((item, index) => (
               <tr key={index}>
                 {columns?.map((column) => {
-                  if (column.accessor === "download_link") {
+                  if (column.accessor  === "status") {
                     return (
                       <td key={`${column.accessor}-${index}`}>
-                        <i className="ri-download-2-line" />
+                        <div className={`status-${item[column.accessor]}`}>
+                          {item[column.accessor]}
+                        </div>
                       </td>
                     );
-                  }
+                  } 
                   return (
                     <td onClick={() => openModal(item.allInfo)} key={`${column.accessor}-${index}`}>
                       {item[column.accessor]}

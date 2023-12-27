@@ -9,6 +9,7 @@ import "remixicon/fonts/remixicon.css";
 import Login from "./pages/Login";
 import routes from "./routes";
 import TheLayout from "./container/TheLayout";
+import CreateInvoice from "./pages/Invoice/CreateInvoice";
 
 function App() {
   return (
@@ -18,10 +19,11 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/" element={<TheLayout />}>
             {routes}
+            <Route path="/data-invoice/create" element={<CreateInvoice />} />
           </Route>
         </Routes>
       </BrowserRouter>
-      
+
       <ToastContainer
         position="top-right"
         autoClose={5000}
