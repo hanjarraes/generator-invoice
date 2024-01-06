@@ -1,0 +1,7 @@
+PORT=8080
+MYSQL_HOST=localhost
+MYSQL_PORT=3306
+MYSQL_USER=root
+MYSQL_PASSWORD=
+MYSQL_DATABASE=tb_invoice
+MY_SECRET=invoice-generator-hanjar
