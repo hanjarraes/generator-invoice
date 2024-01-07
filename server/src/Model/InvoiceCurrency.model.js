@@ -1,11 +1,11 @@
 module.exports = (sequelize, DataTypes) => {
-    const RoleModule = sequelize.define("RoleModule", {
+    const InvoiceCurrency = sequelize.define("invoice_currency", {
       id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
       },
-      module: {
+      currency: {
         type: DataTypes.STRING
       },
       description: {
@@ -13,13 +13,13 @@ module.exports = (sequelize, DataTypes) => {
       }
     });
   
-    RoleModule.associate = (models) => {
-      RoleModule.belongsTo(models.UserRole, {
-        foreignKey: 'role_id',
+    InvoiceCurrency.associate = (models) => {
+      InvoiceCurrency.belongsTo(models.Invoice, {
+        foreignKey: 'invoice_id',
         onDelete: 'CASCADE'
       });
     };
   
-    return RoleModule;
+    return InvoiceCurrency;
   };
   

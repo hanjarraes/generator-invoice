@@ -1,11 +1,11 @@
 module.exports = (sequelize, DataTypes) => {
-    const UserRole = sequelize.define("UserRole", {
+    const RoleModule = sequelize.define("role_module", {
       id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
       },
-      role: {
+      module: {
         type: DataTypes.STRING
       },
       description: {
@@ -13,13 +13,13 @@ module.exports = (sequelize, DataTypes) => {
       }
     });
   
-    UserRole.associate = (models) => {
-      UserRole.belongsTo(models.User, {
-        foreignKey: 'user_id',
+    RoleModule.associate = (models) => {
+      RoleModule.belongsTo(models.UserRole, {
+        foreignKey: 'role_id',
         onDelete: 'CASCADE'
       });
     };
   
-    return UserRole;
+    return RoleModule;
   };
   

@@ -6,7 +6,6 @@ const loginRouter = require('./Pages/Login/login.router');
 const cors = require('cors')
 const app = express()
 
-
 const corOptions = {
     origin: 'https://localhost:3000'
 }
@@ -15,7 +14,6 @@ const corOptions = {
 app.use(cors(corOptions))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
-
 app.use(
     express.urlencoded({
         extended: true,

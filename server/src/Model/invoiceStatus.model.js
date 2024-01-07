@@ -1,22 +1,22 @@
 module.exports = (sequelize, DataTypes) => {
-    const UserLog = sequelize.define("UserLog", {
+    const InvoiceStatus = sequelize.define("invoice_status", {
       id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
       },
-      activity: {
+      status: {
         type: DataTypes.STRING
       }
     });
   
-    UserLog.associate = (models) => {
-      UserLog.belongsTo(models.User, {
-        foreignKey: 'user_id',
+    InvoiceStatus.associate = (models) => {
+      InvoiceStatus.belongsTo(models.Invoice, {
+        foreignKey: 'invoice_id',
         onDelete: 'CASCADE'
       });
     };
   
-    return UserLog;
+    return InvoiceStatus;
   };
   

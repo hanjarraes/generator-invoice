@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-    const InvoiceItem = sequelize.define("InvoiceItem", {
+    const InvoiceItem = sequelize.define("invoice_item", {
       id: {
         type: DataTypes.INTEGER,
         primaryKey: true,

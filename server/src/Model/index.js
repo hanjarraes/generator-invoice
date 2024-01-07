@@ -1,5 +1,5 @@
 const { Sequelize, DataTypes } = require('sequelize');
-const sequelize = require('../database');
+const sequelize = require('../config/database');
 
 
 const db = {};
@@ -19,13 +19,13 @@ db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
 // Sinkronisasi model dengan database
-sequelize.sync({ force: false })
-  .then(() => {
-    console.log('Sinkronisasi model dengan database berhasil.');
-  })
-  .catch((err) => {
-    console.error('Terjadi kesalahan saat sinkronisasi:', err);
-  });
+// sequelize.sync({ force: false })
+//   .then(() => {
+//     console.log('Sinkronisasi model dengan database berhasil.');
+//   })
+//   .catch((err) => {
+//     console.error('Terjadi kesalahan saat sinkronisasi:', err);
+//   });
 
 
 module.exports = db;
