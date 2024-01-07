@@ -58,9 +58,9 @@ module.exports = {
             }
 
             // log
-            await UserLog.create({ 
-                user_id: loggedInUser.id, 
-                activity: `Showing data for User ID ${id} by ${loggedInUser.username}` 
+            await UserLog.create({
+                user_id: loggedInUser.id,
+                activity: `Showing data for User ID ${id} by ${loggedInUser.username}`
             });
 
             return res.json({
@@ -80,10 +80,10 @@ module.exports = {
     store: async (req, res) => {
         const { user_role_id, email, username, password } = req.body;
         const loggedInUser = req.user;
-    
+
         try {
             const userRoleExists = await UserRole.findByPk(user_role_id);
-            
+
             if (!userRoleExists) {
                 return res.status(404).json({
                     status: 404,
@@ -91,7 +91,7 @@ module.exports = {
                     error: `UserRole with ID ${user_role_id} does not exist`,
                 });
             }
-    
+
             const existingUser = await User.findOne({ where: { email: email } });
             if (existingUser) {
                 return res.status(400).json({
@@ -100,7 +100,7 @@ module.exports = {
                     error: 'This email is already registered',
                 });
             }
-    
+
             const hashedPassword = await bcrypt.hash(password, saltRounds);
             const user = await User.create({
                 user_role_id: user_role_id,
@@ -108,13 +108,13 @@ module.exports = {
                 username: username,
                 password: hashedPassword,
             });
-    
+
             // log
-            await UserLog.create({ 
-                user_id: loggedInUser.id, 
-                activity: `Creating new user with username ${username} by ${loggedInUser.username}` 
+            await UserLog.create({
+                user_id: loggedInUser.id,
+                activity: `Creating new user with username ${username} by ${loggedInUser.username}`
             });
-    
+
             res.json({
                 data: user,
                 status: 200,
@@ -129,7 +129,7 @@ module.exports = {
             });
         }
     },
-    
+
     update: async (req, res) => {
         const id = req.params.id;
         const loggedInUser = req.user;
@@ -145,11 +145,33 @@ module.exports = {
                 });
             }
 
-            const { email, username, password } = req.body;
+            const { email, username, password, user_role_id } = req.body;
+
+            const userRoleExists = await UserRole.findByPk(user_role_id);
+
+            if (!userRoleExists) {
+                return res.status(404).json({
+                    status: 404,
+                    message: 'UserRole not found',
+                    error: `UserRole with ID ${user_role_id} does not exist`,
+                });
+            }
+
+            if (email !== userData.email) {
+                const existingUser = await User.findOne({ where: { email: email } });
+                if (existingUser) {
+                    return res.status(400).json({
+                        status: 400,
+                        message: 'Email already exists',
+                        error: 'This email is already registered',
+                    });
+                }
+            }
+
             const hashedPassword = await bcrypt.hash(password, saltRounds);
 
             await User.update(
-                { email: email, username: username, password: hashedPassword },
+                { user_role_id: user_role_id, email: email, username: username, password: hashedPassword },
                 { where: { id: id } }
             );
 
@@ -158,8 +180,17 @@ module.exports = {
 
             const updatedUser = await User.findByPk(id);
 
+            const responNewData = {
+                id: updatedUser.id,
+                user_role_id: updatedUser.user_role_id,
+                email: updatedUser.email,
+                username: updatedUser.username,
+                created_at: updatedUser.created_at,
+                updated_at: updatedUser.updated_at
+            }
+
             res.json({
-                data: updatedUser,
+                data: responNewData,
                 status: 200,
                 message: 'Data edited successfully',
                 url: req.url,
@@ -173,13 +204,14 @@ module.exports = {
         }
     },
 
+
     delete: async (req, res) => {
         const id = req.params.id;
         const loggedInUser = req.user;
-    
+
         try {
             const deletedUser = await User.findOne({ where: { id: id } });
-    
+
             if (!deletedUser) {
                 return res.status(404).json({
                     status: 404,
@@ -187,12 +219,12 @@ module.exports = {
                     url: req.url,
                 });
             }
-    
+
             await User.destroy({ where: { id: id } });
-    
+
             // log
             await UserLog.create({ user_id: loggedInUser.id, activity: `Deleting data for User ID ${id} by ${loggedInUser.username}` });
-    
+
             res.json({
                 data: deletedUser,
                 status: true,
@@ -208,6 +240,4 @@ module.exports = {
             });
         }
     },
-    
-    
 };
