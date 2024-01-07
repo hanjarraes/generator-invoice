@@ -1,10 +1,9 @@
-'use strict';
 const { Model, DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
   class User extends Model {
     static associate(models) {
-      // Tidak ada asosiasi yang didefinisikan dalam migration
+      User.belongsTo(models.UserRole, { foreignKey: 'user_role_id' });
     }
   }
 
@@ -18,17 +17,18 @@ module.exports = (sequelize) => {
     created_at: {
       type: DataTypes.DATE,
       allowNull: false,
-      defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
+      defaultValue: new Date(),
     },
     updated_at: {
       type: DataTypes.DATE,
       allowNull: false,
-      defaultValue: sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')
+      defaultValue: new Date()
     }
   }, {
     sequelize,
     modelName: 'User',
-    timestamps: false, // Atur timestamps sesuai dengan struktur di migration
+    tableName: 'users',
+    timestamps: false,
   });
 
   return User;

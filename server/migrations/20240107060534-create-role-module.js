@@ -1,8 +1,6 @@
-'use strict';
-
 module.exports = {
   async up(queryInterface, Sequelize) {
-    return queryInterface.createTable('tb_role_module', {
+    await queryInterface.createTable('tb_role_module', {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
@@ -13,7 +11,9 @@ module.exports = {
         allowNull: false,
         references: {
           model: 'tb_users_role',
-          key: 'id'
+          key: 'id',
+          onUpdate: 'CASCADE',
+          onDelete: 'CASCADE' 
         }
       },
       module: {
@@ -24,14 +24,12 @@ module.exports = {
         type: Sequelize.STRING
       },
       created_at: {
-        type: Sequelize.DATE,
         allowNull: false,
-        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
+        type: Sequelize.DATE
       },
       updated_at: {
-        type: Sequelize.DATE,
         allowNull: false,
-        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')
+        type: Sequelize.DATE
       }
     });
   },

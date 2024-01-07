@@ -1,8 +1,6 @@
-'use strict';
-
 module.exports = {
   async up(queryInterface, Sequelize) {
-    return queryInterface.createTable('tb_invoice_items', {
+    await queryInterface.createTable('tb_invoice_items', {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
@@ -13,7 +11,9 @@ module.exports = {
         allowNull: false,
         references: {
           model: 'tb_invoice',
-          key: 'id'
+          key: 'id',
+          onUpdate: 'CASCADE', 
+          onDelete: 'CASCADE' 
         }
       },
       name: {
@@ -26,19 +26,17 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       created_at: {
-        type: Sequelize.DATE,
         allowNull: false,
-        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
+        type: Sequelize.DATE
       },
       updated_at: {
-        type: Sequelize.DATE,
         allowNull: false,
-        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')
+        type: Sequelize.DATE
       }
     });
   },
 
   async down(queryInterface, Sequelize) {
-    return queryInterface.dropTable('InvoiceItems');
+    return queryInterface.dropTable('tb_invoice_items');
   }
 };

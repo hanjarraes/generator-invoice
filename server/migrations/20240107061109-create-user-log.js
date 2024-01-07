@@ -1,4 +1,3 @@
-
 module.exports = {
   async up(queryInterface, Sequelize) {
     return queryInterface.createTable('users_log', {
@@ -10,18 +9,19 @@ module.exports = {
       user_id: {
         type: Sequelize.INTEGER,
         references: {
-          model: 'Users',
+          model: 'users',
           key: 'id'
-        }
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE'
       },
       activity: {
         type: Sequelize.STRING
       },
       created_at: {
-        type: Sequelize.DATE,
         allowNull: false,
-        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
-      }
+        type: Sequelize.DATE
+      },
     });
   },
 
@@ -29,4 +29,3 @@ module.exports = {
     return queryInterface.dropTable('users_log');
   }
 };
-

@@ -1,30 +1,29 @@
 const bcrypt = require('bcrypt');
 const db = require('../../../models');
-const Users = db.User;
-const UsersLog = db.UserLog;
+const { User, UserLog, UserRole } = db;
 const saltRounds = 10;
 
 module.exports = {
     index: async (req, res) => {
         try {
-            const usersData = await Users.findAll({});
+            const usersData = await User.findAll({});
             if (usersData.length > 0) {
                 res.json({
                     data: usersData,
-                    status: true,
+                    status: 200,
                     message: 'Data Found',
                     url: req.url,
                 });
             } else {
                 res.json({
-                    status: false,
+                    status: 404,
                     message: 'Data Not Found',
                     url: req.url,
                 });
             }
         } catch (error) {
             res.status(500).json({
-                status: false,
+                status: 500,
                 message: 'Failed to fetch data',
                 error: error.message,
             });
@@ -36,27 +35,42 @@ module.exports = {
         const loggedInUser = req.user;
 
         try {
-            const userData = await Users.findOne({ where: { id: id } });
-            if (userData) {
-                // log
-                await UsersLog.create({ user_id: loggedInUser.id, activity: `Showing data for User ID ${id} by ${loggedInUser.username}` });
+            const userData = await User.findOne({
+                where: { id: id },
+                include: UserRole
+            });
 
-                return res.json({
-                    data: userData,
-                    status: true,
-                    message: 'Data found successfully',
-                    url: req.url,
-                });
-            } else {
+            if (!userData) {
                 return res.status(404).json({
-                    status: false,
+                    status: 404,
                     message: 'Data not found',
                     url: req.url,
                 });
             }
+
+            const userRole = userData.UserRole;
+            const newData = {
+                id: userData.id,
+                role: userRole.role,
+                description: userRole.description,
+                email: userData.email,
+                username: userData.username
+            }
+
+            // log
+            await UserLog.create({ 
+                user_id: loggedInUser.id, 
+                activity: `Showing data for User ID ${id} by ${loggedInUser.username}` 
+            });
+
+            return res.json({
+                data: newData,
+                status: 200,
+                message: 'Data found successfully',
+                url: req.url,
+            });
         } catch (error) {
-            res.status(500).json({
-                status: false,
+            return res.status(500).json({
                 message: 'Failed to fetch data',
                 error: error.message,
             });
@@ -64,45 +78,68 @@ module.exports = {
     },
 
     store: async (req, res) => {
-        const { email, username, password } = req.body;
+        const { user_role_id, email, username, password } = req.body;
         const loggedInUser = req.user;
-
+    
         try {
+            const userRoleExists = await UserRole.findByPk(user_role_id);
+            
+            if (!userRoleExists) {
+                return res.status(404).json({
+                    status: 404,
+                    message: 'UserRole not found',
+                    error: `UserRole with ID ${user_role_id} does not exist`,
+                });
+            }
+    
+            const existingUser = await User.findOne({ where: { email: email } });
+            if (existingUser) {
+                return res.status(400).json({
+                    status: 400,
+                    message: 'Email already exists',
+                    error: 'This email is already registered',
+                });
+            }
+    
             const hashedPassword = await bcrypt.hash(password, saltRounds);
-            const user = await Users.create({
+            const user = await User.create({
+                user_role_id: user_role_id,
                 email: email,
                 username: username,
                 password: hashedPassword,
             });
-
+    
             // log
-            await UsersLog.create({ user_id: loggedInUser.id, activity: `Creating new user with username ${username} by ${loggedInUser.username}` });
-
+            await UserLog.create({ 
+                user_id: loggedInUser.id, 
+                activity: `Creating new user with username ${username} by ${loggedInUser.username}` 
+            });
+    
             res.json({
                 data: user,
-                status: true,
+                status: 200,
                 message: 'Data added successfully',
                 url: req.url,
             });
         } catch (error) {
             res.status(500).json({
-                status: false,
+                status: 500,
                 message: 'Failed to add data',
                 error: error.message,
             });
         }
     },
-
+    
     update: async (req, res) => {
         const id = req.params.id;
         const loggedInUser = req.user;
 
         try {
-            const userData = await Users.findByPk(id);
+            const userData = await User.findByPk(id);
 
             if (!userData) {
                 return res.status(404).json({
-                    status: false,
+                    status: 404,
                     message: 'Data not found',
                     url: req.url,
                 });
@@ -111,25 +148,25 @@ module.exports = {
             const { email, username, password } = req.body;
             const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-            await Users.update(
+            await User.update(
                 { email: email, username: username, password: hashedPassword },
                 { where: { id: id } }
             );
 
             // log
-            await UsersLog.create({ user_id: loggedInUser.id, activity: `Updating data for User ID ${id} by ${loggedInUser.username}` });
+            await UserLog.create({ user_id: loggedInUser.id, activity: `Updating data for User ID ${id} by ${loggedInUser.username}` });
 
-            const updatedUser = await Users.findByPk(id);
+            const updatedUser = await User.findByPk(id);
 
             res.json({
                 data: updatedUser,
-                status: true,
+                status: 200,
                 message: 'Data edited successfully',
                 url: req.url,
             });
         } catch (error) {
             res.status(500).json({
-                status: false,
+                status: 500,
                 message: 'Failed to edit data',
                 error: error.message,
             });
@@ -139,23 +176,23 @@ module.exports = {
     delete: async (req, res) => {
         const id = req.params.id;
         const loggedInUser = req.user;
-
+    
         try {
-            const deletedUser = await Users.findOne({ where: { id: id } });
-
+            const deletedUser = await User.findOne({ where: { id: id } });
+    
             if (!deletedUser) {
                 return res.status(404).json({
-                    status: false,
+                    status: 404,
                     message: 'Data not found',
                     url: req.url,
                 });
             }
-
-            await Users.destroy({ where: { id: id } });
-
+    
+            await User.destroy({ where: { id: id } });
+    
             // log
-            await UsersLog.create({ user_id: loggedInUser.id, activity: `Deleting data for User ID ${id} by ${loggedInUser.username}` });
-
+            await UserLog.create({ user_id: loggedInUser.id, activity: `Deleting data for User ID ${id} by ${loggedInUser.username}` });
+    
             res.json({
                 data: deletedUser,
                 status: true,
@@ -163,6 +200,7 @@ module.exports = {
                 url: req.url,
             });
         } catch (error) {
+            console.error('Error deleting data:', error);
             res.status(500).json({
                 status: false,
                 message: 'Failed to delete data',
@@ -170,4 +208,6 @@ module.exports = {
             });
         }
     },
+    
+    
 };

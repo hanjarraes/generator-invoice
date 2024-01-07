@@ -16,6 +16,41 @@ module.exports = {
         created_at: new Date(),
         updated_at: new Date()
       },
+      {
+        users_role_id: 1,
+        module: 'Module C',
+        description: 'Description for Module C',
+        created_at: new Date(),
+        updated_at: new Date()
+      },
+      {
+        users_role_id: 2, 
+        module: 'Module D',
+        description: 'Description for Module D',
+        created_at: new Date(),
+        updated_at: new Date()
+      },
+      {
+        users_role_id: 1,
+        module: 'Module E',
+        description: 'Description for Module E',
+        created_at: new Date(),
+        updated_at: new Date()
+      },
+      {
+        users_role_id: 2, 
+        module: 'Module F',
+        description: 'Description for Module F',
+        created_at: new Date(),
+        updated_at: new Date()
+      },
+      {
+        users_role_id: 1,
+        module: 'Module G',
+        description: 'Description for Module G',
+        created_at: new Date(),
+        updated_at: new Date()
+      },
     ]);
   },
 

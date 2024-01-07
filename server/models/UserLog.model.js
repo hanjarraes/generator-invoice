@@ -1,10 +1,12 @@
-'use strict';
 const { Model, DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
   class UserLog extends Model {
     static associate(models) {
-      // Tidak ada asosiasi yang didefinisikan dalam migration
+      UserLog.belongsTo(models.User, {
+        foreignKey: 'user_id',
+        onDelete: 'CASCADE', 
+      });
     }
   }
 
@@ -16,8 +18,8 @@ module.exports = (sequelize) => {
     created_at: {
       type: DataTypes.DATE,
       allowNull: false,
-      defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
-    }
+      defaultValue: new Date(),
+    },
   }, {
     sequelize,
     modelName: 'UserLog',
