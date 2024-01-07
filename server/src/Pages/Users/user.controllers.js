@@ -39,7 +39,7 @@ module.exports = {
             const userData = await Users.findOne({ where: { id: id } });
             if (userData) {
                 // log
-                await UsersLog.create({ activity: `Showing data for User ID ${id} by ${loggedInUser.username}` });
+                await UsersLog.create({ user_id: loggedInUser.id, activity: `Showing data for User ID ${id} by ${loggedInUser.username}` });
 
                 return res.json({
                     data: userData,
@@ -76,7 +76,7 @@ module.exports = {
             });
 
             // log
-            await UsersLog.create({ activity: `Creating new user with username ${username} by ${loggedInUser.username}` });
+            await UsersLog.create({ user_id: loggedInUser.id, activity: `Creating new user with username ${username} by ${loggedInUser.username}` });
 
             res.json({
                 data: user,
@@ -95,7 +95,7 @@ module.exports = {
 
     update: async (req, res) => {
         const id = req.params.id;
-        const loggedInUser = req.user; 
+        const loggedInUser = req.user;
 
         try {
             const userData = await Users.findByPk(id);
@@ -117,7 +117,7 @@ module.exports = {
             );
 
             // log
-            await UsersLog.create({ activity: `Updating data for User ID ${id} by ${loggedInUser.username}` });
+            await UsersLog.create({ user_id: loggedInUser.id, activity: `Updating data for User ID ${id} by ${loggedInUser.username}` });
 
             const updatedUser = await Users.findByPk(id);
 
@@ -138,7 +138,7 @@ module.exports = {
 
     delete: async (req, res) => {
         const id = req.params.id;
-        const loggedInUser = req.user; 
+        const loggedInUser = req.user;
 
         try {
             const deletedUser = await Users.findOne({ where: { id: id } });
@@ -154,7 +154,7 @@ module.exports = {
             await Users.destroy({ where: { id: id } });
 
             // log
-            await UsersLog.create({ activity: `Deleting data for User ID ${id} by ${loggedInUser.username}` });
+            await UsersLog.create({ user_id: loggedInUser.id, activity: `Deleting data for User ID ${id} by ${loggedInUser.username}` });
 
             res.json({
                 data: deletedUser,

@@ -21,7 +21,8 @@ module.exports = (sequelize) => {
   }, {
     sequelize,
     modelName: 'UserLog',
-    timestamps: false, // Atur timestamps sesuai dengan struktur di migration
+    tableName: 'users_log',
+    timestamps: false,
   });
 
   return UserLog;

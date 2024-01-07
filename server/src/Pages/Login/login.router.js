@@ -4,7 +4,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../../../models');
 const Users = db.User;
-const UsersLog = db.UserLog;
+const UserLog = db.UserLog;
 
 router.post("/login", async (req, res) => {
     try {
@@ -20,14 +20,14 @@ router.post("/login", async (req, res) => {
         delete user.password;
 
         const token = jwt.sign({ id: user.id, username: user.username }, process.env.MY_SECRET, { expiresIn: "1h" });
-
         //  UserLog
-        await UsersLog.create({ activity: `User ${username} logged in` });
+        await UserLog.create({ user_id:user.id, activity: `User ${username} logged in` });
 
         res.cookie("token", token, { httpOnly: true });
         res.json({ token });
 
     } catch (error) {
+        console.error('Error creating log entry:', error);
         return res.status(500).json({
             error: "Internal Server Error",
         });

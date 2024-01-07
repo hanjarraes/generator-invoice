@@ -1,4 +1,3 @@
-'use strict';
 
 module.exports = {
   async up(queryInterface, Sequelize) {
@@ -11,7 +10,7 @@ module.exports = {
       user_id: {
         type: Sequelize.INTEGER,
         references: {
-          model: 'users',
+          model: 'Users',
           key: 'id'
         }
       },
@@ -30,3 +29,4 @@ module.exports = {
     return queryInterface.dropTable('users_log');
   }
 };
+

@@ -29,6 +29,7 @@ module.exports = (sequelize) => {
   }, {
     sequelize,
     modelName: 'InvoiceItem',
+    tableName: 'tb_invoice_items',
     timestamps: false, // Atur timestamps sesuai dengan struktur di migration
   });
 
