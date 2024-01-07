@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt');
-const db = require('../../Model');
+const db = require('../../../models');
 const UserRole = db.UserRole;
 const UsersLog = db.UserLog;
 const saltRounds = 10;
