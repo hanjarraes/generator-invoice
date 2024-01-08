@@ -2,6 +2,7 @@ const express = require('express');
 require('dotenv').config();
 const cookieParser = require("cookie-parser");
 const userRouter = require('./Pages/Users/user.router');
+const roleRouter = require('./Pages/Role/role.router');
 const loginRouter = require('./Pages/Login/login.router');
 const cors = require('cors')
 const app = express()
@@ -26,6 +27,7 @@ app.get('/', (req, res,) => {
     res.send('Hello World!')
 })
 app.use(userRouter)
+app.use(roleRouter)
 app.use(loginRouter)
 
 // Port

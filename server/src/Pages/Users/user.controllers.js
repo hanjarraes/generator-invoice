@@ -53,6 +53,7 @@ module.exports = {
                 id: userData.id,
                 role: userRole.role,
                 description: userRole.description,
+                status: userData.status,
                 email: userData.email,
                 username: userData.username
             }
@@ -145,7 +146,13 @@ module.exports = {
                 });
             }
 
-            const { email, username, password, user_role_id } = req.body;
+            const {
+                email,
+                username,
+                password,
+                user_role_id,
+                status
+            } = req.body;
 
             const userRoleExists = await UserRole.findByPk(user_role_id);
 
@@ -171,7 +178,7 @@ module.exports = {
             const hashedPassword = await bcrypt.hash(password, saltRounds);
 
             await User.update(
-                { user_role_id: user_role_id, email: email, username: username, password: hashedPassword },
+                { user_role_id: user_role_id, email: email, username: username, password: hashedPassword, status: status },
                 { where: { id: id } }
             );
 

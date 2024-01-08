@@ -3,7 +3,10 @@ const { Model, DataTypes } = require('sequelize');
 module.exports = (sequelize) => {
   class RoleModule extends Model {
     static associate(models) {
-      // Tidak ada asosiasi yang didefinisikan dalam migration
+      RoleModule.belongsTo(models.UserRole, {
+        foreignKey: 'users_role_id',
+        onDelete: 'CASCADE',
+      });
     }
   }
   
@@ -27,8 +30,8 @@ module.exports = (sequelize) => {
   }, {
     sequelize,
     modelName: 'RoleModule',
-    tableName: 'tb_role_module',
-    timestamps: false, // Atur timestamps sesuai dengan struktur di migration
+    tableName: 'tb_role_module',  
+    timestamps: false, 
   });
 
   return RoleModule;

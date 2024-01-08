@@ -9,6 +9,7 @@ module.exports = {
         email: 'hanjarraess@gmail.com',
         username: 'hanjarraes',
         password: hashedPassword,
+        status: 'active',
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -16,6 +17,7 @@ module.exports = {
         user_role_id: 2, 
         email: 'vg4615156@gmail.com',
         username: 'admin',
+        status: 'active',
         password: hashedPassword,
         created_at: new Date(),
         updated_at: new Date()

@@ -3,7 +3,10 @@ const { Model, DataTypes } = require('sequelize');
 module.exports = (sequelize) => {
   class UserRole extends Model {
     static associate(models) {
-      // Tidak ada asosiasi yang didefinisikan dalam migrasi
+      UserRole.hasMany(models.RoleModule, {
+        foreignKey: 'users_role_id',
+        onDelete: 'CASCADE',
+      });
     }
   }
 

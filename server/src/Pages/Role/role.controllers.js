@@ -1,7 +1,6 @@
 const bcrypt = require('bcrypt');
 const db = require('../../../models');
-const UserRole = db.UserRole;
-const UsersLog = db.UserLog;
+const { UserLog, UserRole, RoleModule } = db;
 const saltRounds = 10;
 
 module.exports = {
@@ -11,20 +10,20 @@ module.exports = {
             if (userRoleData.length > 0) {
                 res.json({
                     data: userRoleData,
-                    status: true,
+                    status: 200,
                     message: 'Data Found',
                     url: req.url,
                 });
             } else {
                 res.json({
-                    status: false,
+                    status: 404,
                     message: 'Data Not Found',
                     url: req.url,
                 });
             }
         } catch (error) {
             res.status(500).json({
-                status: false,
+                status: 500,
                 message: 'Failed to fetch data',
                 error: error.message,
             });
@@ -36,27 +35,29 @@ module.exports = {
         const loggedInUser = req.user;
 
         try {
-            const userRoleData = await UserRole.findOne({ where: { id: id } });
+            const userRoleData = await UserRole.findByPk(id);
+
             if (userRoleData) {
                 // log
-                await UsersLog.create({ activity: `Showing data for Role ID ${id} by ${loggedInUser.username}` });
+                await UserLog.create({ user_id: loggedInUser.id, activity: `Showing data for Role ID ${id} by ${loggedInUser.username}` });
 
                 return res.json({
                     data: userRoleData,
-                    status: true,
+                    status: 200,
                     message: 'Data found successfully',
                     url: req.url,
                 });
             } else {
                 return res.status(404).json({
-                    status: false,
+                    status: 404,
                     message: 'Data not found',
                     url: req.url,
                 });
             }
         } catch (error) {
+            console.error('Error fetching data:', error);
             res.status(500).json({
-                status: false,
+                status: 500,
                 message: 'Failed to fetch data',
                 error: error.message,
             });
@@ -64,29 +65,35 @@ module.exports = {
     },
 
     store: async (req, res) => {
-        const { email, username, password } = req.body;
+        const { role, description, module } = req.body;
         const loggedInUser = req.user;
 
         try {
-            const hashedPassword = await bcrypt.hash(password, saltRounds);
             const userRole = await UserRole.create({
-                email: email,
-                username: username,
-                password: hashedPassword,
+                role: role,
+                description: description,
             });
 
+            const createdModules = await Promise.all(module.map(async (mod) => {
+                return await RoleModule.create({
+                    users_role_id: userRole.id,
+                    module: mod.module,
+                    description: mod.description,
+                });
+            }));
+
             // log
-            await UsersLog.create({ activity: `Creating new Role with username ${username} by ${loggedInUser.username}` });
+            await UserLog.create({ activity: `Creating new Role ${role} by ${loggedInUser.username}` });
 
             res.json({
-                data: userRole,
-                status: true,
+                data: { userRole, createdModules },
+                status: 200,
                 message: 'Data added successfully',
                 url: req.url,
             });
         } catch (error) {
             res.status(500).json({
-                status: false,
+                status: 500,
                 message: 'Failed to add data',
                 error: error.message,
             });
@@ -95,79 +102,122 @@ module.exports = {
 
     update: async (req, res) => {
         const id = req.params.id;
-        const loggedInUser = req.user; 
+        const { role, description, module } = req.body;
+        const loggedInUser = req.user;
+
+        const newDataRespon = {
+            id: id,
+            role: role,
+            description: description,
+            module: module
+        }
 
         try {
-            const userRoleData = await UserRole.findByPk(id);
+            const existingRole = await UserRole.findByPk(id, { include: RoleModule });
 
-            if (!userRoleData) {
+            if (!existingRole) {
                 return res.status(404).json({
-                    status: false,
-                    message: 'Data not found',
+                    status: 404,
+                    message: 'Role not found',
                     url: req.url,
                 });
             }
 
-            const { email, username, password } = req.body;
-            const hashedPassword = await bcrypt.hash(password, saltRounds);
+            // Periksa modul yang dihapus dari perubahan
+            const modulesToDelete = existingRole.RoleModules.filter(existingModule => {
+                return !module.some(updatedModule => updatedModule.module === existingModule.module);
+            });
 
-            await UserRole.update(
-                { email: email, username: username, password: hashedPassword },
-                { where: { id: id } }
-            );
+            // Hapus modul yang tidak ada dalam data pembaruan
+            await Promise.all(modulesToDelete.map(async (moduleToDelete) => {
+                await RoleModule.destroy({ where: { id: moduleToDelete.id } });
+            }));
 
-            // log
-            await UsersLog.create({ activity: `Updating data for Role ID ${id} by ${loggedInUser.username}` });
+            // Tambah modul yang baru atau perbarui yang ada
+            await Promise.all(module.map(async (updatedModule) => {
+                const existingModule = existingRole.RoleModules.find(module => module.module === updatedModule.module);
+                if (existingModule) {
+                    await existingModule.update({
+                        module: updatedModule.module,
+                        description: updatedModule.description,
+                    });
+                } else {
+                    await RoleModule.create({
+                        users_role_id: id,
+                        module: updatedModule.module,
+                        description: updatedModule.description,
+                    });
+                }
+            }));
 
-            const updatedUser = await UserRole.findByPk(id);
+            await existingRole.update({
+                role: role,
+                description: description,
+            });
+
+            // Log
+            await UserLog.create({ activity: `Updating Role ${role} by ${loggedInUser.username}` });
 
             res.json({
-                data: updatedUser,
-                status: true,
-                message: 'Data edited successfully',
+                data: newDataRespon,
+                status: 200,
+                message: 'Data updated successfully',
                 url: req.url,
             });
         } catch (error) {
             res.status(500).json({
-                status: false,
-                message: 'Failed to edit data',
+                status: 500,
+                message: 'Failed to update data',
                 error: error.message,
             });
         }
     },
+
 
     delete: async (req, res) => {
-        const id = req.params.id;
-        const loggedInUser = req.user; 
+        const roleId = req.params.id;
+        const loggedInUser = req.user;
 
         try {
-            const deletedUser = await UserRole.findOne({ where: { id: id } });
+            const userRole = await UserRole.findByPk(roleId);
 
-            if (!deletedUser) {
+            if (!userRole) {
                 return res.status(404).json({
-                    status: false,
-                    message: 'Data not found',
+                    status: 404,
+                    message: 'User Role not found',
                     url: req.url,
                 });
             }
 
-            await UserRole.destroy({ where: { id: id } });
+            // Find and delete associated Role Modules first
+            const deletedModules = await RoleModule.destroy({ where: { users_role_id: roleId } });
 
-            // log
-            await UsersLog.create({ activity: `Deleting data for Role ID ${id} by ${loggedInUser.username}` });
+            // After Role Modules are deleted, delete the User Role
+            await UserRole.destroy({ where: { id: roleId } });
+
+            // Log the deletion activity
+            await UserLog.create({
+                user_id: loggedInUser.id,
+                activity: `Deleting User Role ID ${roleId} by ${loggedInUser.username}`
+            });
 
             res.json({
-                data: deletedUser,
+                data: {
+                    deletedUserRole: userRole,
+                    deletedRoleModules: deletedModules,
+                },
                 status: true,
-                message: 'Data successfully deleted',
+                message: 'User Role and associated Role Modules deleted successfully',
                 url: req.url,
             });
         } catch (error) {
             res.status(500).json({
                 status: false,
-                message: 'Failed to delete data',
+                message: 'Failed to delete User Role',
                 error: error.message,
             });
         }
     },
+
+
 };
