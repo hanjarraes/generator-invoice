@@ -1,24 +1,42 @@
-
-/** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up (queryInterface, Sequelize) {
-    /**
-     * Add seed commands here.
-     *
-     * Example:
-     * await queryInterface.bulkInsert('People', [{
-     *   name: 'John Doe',
-     *   isBetaMember: false
-     * }], {});
-    */
+  up: async (queryInterface, Sequelize) => {
+    await queryInterface.bulkInsert('tb_invoice_items', [
+      {
+        invoice_id: 1, 
+        name: 'Product A',
+        price: 100,
+        quantity: 2,
+        created_at: new Date(),
+        updated_at: new Date(),
+      },
+      {
+        invoice_id: 1, 
+        name: 'Product B',
+        price: 150,
+        quantity: 3,
+        created_at: new Date(),
+        updated_at: new Date(),
+      },
+      {
+        invoice_id: 2, 
+        name: 'Service X',
+        price: 80,
+        quantity: 1,
+        created_at: new Date(),
+        updated_at: new Date(),
+      },
+      {
+        invoice_id: 2, 
+        name: 'Service Y',
+        price: 120,
+        quantity: 2,
+        created_at: new Date(),
+        updated_at: new Date(),
+      },
+    ], {});
   },
 
-  async down (queryInterface, Sequelize) {
-    /**
-     * Add commands to revert seed here.
-     *
-     * Example:
-     * await queryInterface.bulkDelete('People', null, {});
-     */
+  down: async (queryInterface, Sequelize) => {
+    await queryInterface.bulkDelete('tb_invoice_items', null, {});
   }
 };

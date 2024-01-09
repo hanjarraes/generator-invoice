@@ -16,6 +16,9 @@ module.exports = {
           onDelete: 'CASCADE' 
         }
       },
+      status: {
+        type: Sequelize.STRING
+      },
       invoice_currency_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
@@ -25,6 +28,9 @@ module.exports = {
           onUpdate: 'CASCADE', 
           onDelete: 'CASCADE' 
         }
+      },
+      currency: {
+        type: Sequelize.STRING
       },
       invoiceNo: {
         type: Sequelize.STRING

@@ -1,13 +1,13 @@
 const db = require('../../../models');
-const { InvoiceCurrency, UserLog } = db;
+const { InvoiceStatus, UserLog } = db;
 
 module.exports = {
     index: async (req, res) => {
         try {
-            const InvoiceCurrencyData = await InvoiceCurrency.findAll({});
-            if (InvoiceCurrencyData.length > 0) {
+            const InvoiceStatusData = await InvoiceStatus.findAll({});
+            if (InvoiceStatusData.length > 0) {
                 res.json({
-                    data: InvoiceCurrencyData,
+                    data: InvoiceStatusData,
                     status: 200,
                     message: 'Data Found',
                     url: req.url,
@@ -32,11 +32,11 @@ module.exports = {
         const id = req.params.id;
         const loggedInUser = req.user;
         try {
-            const InvoiceCurrencyData = await InvoiceCurrency.findOne({
+            const InvoiceStatusData = await InvoiceStatus.findOne({
                 where: { id: id },
             });
 
-            if (!InvoiceCurrencyData) {
+            if (!InvoiceStatusData) {
                 return res.status(404).json({
                     status: 404,
                     message: 'Data not found',
@@ -51,7 +51,7 @@ module.exports = {
             });
 
             return res.json({
-                data: InvoiceCurrencyData,
+                data: InvoiceStatusData,
                 status: 200,
                 message: 'Data found successfully',
                 url: req.url,
@@ -65,20 +65,20 @@ module.exports = {
     },
 
     store: async (req, res) => {
-        const { currency, description } = req.body;
+        const { status, description } = req.body;
         const loggedInUser = req.user;
 
         try {
-            const InvoiceCurrencyData = await InvoiceCurrency.create({
-                currency: currency,
+            const InvoiceStatusData = await InvoiceStatus.create({
+                status: status,
                 description: description,
             });
 
             // log
-            await UserLog.create({ activity: `Creating new Currency ${currency} by ${loggedInUser.username}` });
+            await UserLog.create({ activity: `Creating new Status ${status} by ${loggedInUser.username}` });
 
             res.json({
-                data: { InvoiceCurrencyData },
+                data: { InvoiceStatusData },
                 status: 200,
                 message: 'Data added successfully',
                 url: req.url,
@@ -93,34 +93,34 @@ module.exports = {
     },
 
     update: async (req, res) => {
-        const currencyId = req.params.id;
-        const { currency, description } = req.body;
+        const statusId = req.params.id;
+        const { status, description } = req.body;
         const loggedInUser = req.user;
     
         try {
-            const InvoiceCurrencyData = await InvoiceCurrency.findByPk(currencyId);
+            const InvoiceStatusData = await InvoiceStatus.findByPk(statusId);
     
-            if (!InvoiceCurrencyData) {
+            if (!InvoiceStatusData) {
                 return res.status(404).json({
                     status: 404,
-                    message: 'Currency not found',
+                    message: 'status not found',
                     url: req.url,
                 });
             }
     
-            await InvoiceCurrencyData.update({
-                currency: currency,
+            await InvoiceStatusData.update({
+                status: status,
                 description: description,
             });
     
             // Log the update activity
             await UserLog.create({
                 user_id: loggedInUser.id,
-                activity: `Updating Currency ID ${currencyId} by ${loggedInUser.username}`
+                activity: `Updating status ID ${statusId} by ${loggedInUser.username}`
             });
     
             res.json({
-                data: { InvoiceCurrencyData },
+                data: { InvoiceStatusData },
                 status: 200,
                 message: 'Data updated successfully',
                 url: req.url,
@@ -139,9 +139,9 @@ module.exports = {
         const loggedInUser = req.user;
     
         try {
-            const InvoiceCurrencyData = await InvoiceCurrency.findByPk(currencyId);
+            const InvoiceStatusData = await InvoiceStatus.findByPk(currencyId);
     
-            if (!InvoiceCurrencyData) {
+            if (!InvoiceStatusData) {
                 return res.status(404).json({
                     status: 404,
                     message: 'Currency not found',
@@ -149,7 +149,7 @@ module.exports = {
                 });
             }
     
-            await InvoiceCurrency.destroy({ where: { id: currencyId } });
+            await InvoiceStatus.destroy({ where: { id: currencyId } });
     
             // Log the deletion activity
             await UserLog.create({
@@ -158,7 +158,7 @@ module.exports = {
             });
     
             res.json({
-                data: { InvoiceCurrencyData },
+                data: { InvoiceStatusData },
                 status: 200,
                 message: 'Data deleted successfully',
                 url: req.url,

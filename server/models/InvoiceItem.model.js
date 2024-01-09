@@ -3,7 +3,7 @@ const { Model, DataTypes } = require('sequelize');
 module.exports = (sequelize) => {
   class InvoiceItem extends Model {
     static associate(models) {
-      // Tidak ada asosiasi yang didefinisikan dalam migration
+      InvoiceItem.belongsTo(models.Invoice, { foreignKey: 'invoice_id' });
     }
   }
 
@@ -29,7 +29,7 @@ module.exports = (sequelize) => {
     sequelize,
     modelName: 'InvoiceItem',
     tableName: 'tb_invoice_items',
-    timestamps: false, // Atur timestamps sesuai dengan struktur di migration
+    timestamps: false, 
   });
 
   return InvoiceItem;

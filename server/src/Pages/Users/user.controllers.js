@@ -6,7 +6,9 @@ const saltRounds = 10;
 module.exports = {
     index: async (req, res) => {
         try {
-            const usersData = await User.findAll({});
+            const usersData = await User.findAll({
+                include: UserRole,
+            });
             if (usersData.length > 0) {
                 res.json({
                     data: usersData,

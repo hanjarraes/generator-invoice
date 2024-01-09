@@ -4,7 +4,7 @@ const { Model, DataTypes } = require('sequelize');
 module.exports = (sequelize) => {
   class InvoiceCurrency extends Model {
     static associate(models) {
-      // Tidak ada asosiasi yang didefinisikan dalam migration
+   
     }
   }
   
@@ -25,7 +25,7 @@ module.exports = (sequelize) => {
     sequelize,
     modelName: 'InvoiceCurrency',
     tableName: 'tb_invoice_currency',
-    timestamps: false, // Atur timestamps sesuai dengan struktur di migration
+    timestamps: false, 
   });
 
   return InvoiceCurrency;

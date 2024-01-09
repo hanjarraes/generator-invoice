@@ -1,13 +1,14 @@
-const bcrypt = require('bcrypt');
 const db = require('../../../models');
 const { UserLog, UserRole, RoleModule } = db;
-const saltRounds = 10;
 
 module.exports = {
     index: async (req, res) => {
         try {
-            const userRoleData = await UserRole.findAll({});
-            if (userRoleData.length > 0) {
+            const userRoleData = await UserRole.findAll({
+                include: RoleModule,
+            });
+
+            if (userRoleData) {
                 res.json({
                     data: userRoleData,
                     status: 200,
@@ -35,7 +36,9 @@ module.exports = {
         const loggedInUser = req.user;
 
         try {
-            const userRoleData = await UserRole.findByPk(id);
+            const userRoleData = await UserRole.findByPk(id, {
+                include: RoleModule, 
+            });
 
             if (userRoleData) {
                 // log
@@ -173,7 +176,6 @@ module.exports = {
         }
     },
 
-
     delete: async (req, res) => {
         const roleId = req.params.id;
         const loggedInUser = req.user;
@@ -206,7 +208,7 @@ module.exports = {
                     deletedUserRole: userRole,
                     deletedRoleModules: deletedModules,
                 },
-                status: true,
+                status: 200,
                 message: 'User Role and associated Role Modules deleted successfully',
                 url: req.url,
             });
@@ -218,6 +220,5 @@ module.exports = {
             });
         }
     },
-
 
 };
