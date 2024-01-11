@@ -9,7 +9,7 @@ import { useSelector } from "react-redux";
 const SidebarItemCollapse = ({ item }) => {
   const [open, setOpen] = useState(false);
 
-  const { appState } = useSelector((state) => state.appState);
+  const appState = useSelector((state) => state.global.appState);
 
   useEffect(() => {
     if (appState.includes(item.state)) {

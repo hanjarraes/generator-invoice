@@ -6,8 +6,19 @@ import appRoutes from "../../routes/appRoutes";
 import SidebarItem from "./SidebarItem";
 import SidebarItemCollapse from "./SidebarItemCollapse";
 import LogoIbsi from "../../assets/img/Logo/logo.png";
+import { logoutUser } from "../../Service";
+import { setUser } from "../../store/storeLogin";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const Sidebar = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await logoutUser({ dispatch, setData: setUser, navigate })
+  };
+
   return (
     <Drawer
       variant="permanent"
@@ -47,6 +58,13 @@ const Sidebar = () => {
           ) : null
         )}
       </List>
+      <Toolbar sx={{ marginBottom: "20px", marginTop: "20px" }}>
+        <div onClick={handleLogout} className="logout-btn">
+          <div className="item-logout">
+            <i className="ri-logout-circle-line" /> Logout
+          </div>
+        </div>
+      </Toolbar>
     </Drawer>
   );
 };

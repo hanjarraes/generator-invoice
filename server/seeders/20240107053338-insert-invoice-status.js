@@ -3,19 +3,19 @@ module.exports = {
   async up(queryInterface, Sequelize) {
     return queryInterface.bulkInsert('tb_invoice_status', [
       {
-        status: 'Pending',
+        status: 'Ok',
         description: 'Invoice is pending',
         created_at: new Date(),
         updated_at: new Date()
       },
       {
-        status: 'Paid',
+        status: 'Waiting',
         description: 'Invoice has been paid',
         created_at: new Date(),
         updated_at: new Date()
       },
       {
-        status: 'Cancelled',
+        status: 'Rejected',
         description: 'Invoice has been cancelled',
         created_at: new Date(),
         updated_at: new Date()

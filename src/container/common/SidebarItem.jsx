@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import colorConfigs from "../../configs/colorConfigs";
 
 const SidebarItem = ({ item }) => {
-  const { appState } = useSelector((state) => state.appState);
+  const appState = useSelector((state) => state.global.appState);
 
   return (
     item.sidebarProps && item.path ? (

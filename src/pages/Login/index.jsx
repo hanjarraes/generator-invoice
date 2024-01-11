@@ -1,26 +1,30 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { toast } from 'react-toastify';
+import React, { useState, useEffect } from "react";
 import "./style.scss";
+import { LoginUser } from "../../Service";
+import { setUser } from "../../store/storeLogin";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const navigate = useNavigate();
-
-  const handleEmailChange = (e) => {
-    setEmail(e.target.value);
-  };
-
-  const handlePasswordChange = (e) => {
-    setPassword(e.target.value);
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.login.user);
+  const [payload, setPayload] = useState({
+    username: 'hanjarraes',
+    password: 'hanjar201200'
+  })
+  const handleChange = (e) => {
+    setPayload({ ...payload, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = (e) => {
+    LoginUser({ payload, dispatch, setData: setUser, navigate })
     e.preventDefault();
-    navigate("/");
-    toast.success(`Welcome Back 😉`)
   };
+
+  useEffect(() => {
+    if (user) navigate("/");
+  }, [user, navigate]);
 
   return (
     <div className="container-fluid ps-md-0">
@@ -35,15 +39,16 @@ const Login = () => {
                   <form onSubmit={handleSubmit}>
                     <div className="form-floating mb-3">
                       <input
-                        type="email"
+                        type="text"
                         className="form-control"
                         id="floatingInput"
+                        name="username"
                         placeholder="name@example.com"
                         required
-                        value={email}
-                        onChange={handleEmailChange}
+                        value={payload.username}
+                        onChange={handleChange}
                       />
-                      <label for="floatingInput">Email address</label>
+                      <label htmlFor="floatingInput">Email address</label>
                     </div>
                     <div className="form-floating mb-3">
                       <input
@@ -51,28 +56,14 @@ const Login = () => {
                         className="form-control"
                         id="floatingPassword"
                         placeholder="Password"
+                        name="password"
                         required
-                        value={password}
-                        onChange={handlePasswordChange}
-                        pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+                        value={payload.password}
+                        onChange={handleChange}
+                        // pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
                         title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters"
                       />
-                      <label for="floatingPassword">Password</label>
-                    </div>
-
-                    <div className="form-check mb-3">
-                      <input
-                        className="form-check-input"
-                        type="checkbox"
-                        value=""
-                        id="rememberPasswordCheck"
-                      />
-                      <label
-                        className="form-check-label"
-                        for="rememberPasswordCheck"
-                      >
-                        Remember password
-                      </label>
+                      <label htmlFor="floatingPassword">Password</label>
                     </div>
 
                     <div className="d-grid">

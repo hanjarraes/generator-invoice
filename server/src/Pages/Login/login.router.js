@@ -9,11 +9,14 @@ const { User, UserLog, UserRole, RoleModule } = db;
 router.post("/login", async (req, res) => {
     try {
         const { username, password } = req.body;
-        const user = await User.findOne({ where: { username } });
+        if (!username || !password) return res.status(400).json({ error: "Username and password are required" });
 
-        if (!user || !(await bcrypt.compare(password, user.password))) {
-            return res.status(403).json({ error: "Invalid username or password" });
-        }
+        const user = await User.findOne({ where: { username } });
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+        if(!user || !isPasswordValid) return res.status(403).json({ error: "Invalid username or password" });
+
+        // Set user ID in the session
+        req.session.userId = user.id;
 
         delete user.password;
 
@@ -22,13 +25,13 @@ router.post("/login", async (req, res) => {
             process.env.MY_SECRET,
             { expiresIn: "1h" }
         );
-
         const userRole = await UserRole.findByPk(user.user_role_id);
-
         const roleModules = await RoleModule.findAll({ where: { users_role_id: userRole.id } });
+        if (!userRole || !roleModules) {
+            return res.status(500).json({ error: "Internal Server Error - User role not found" });
+        }
 
         const modules = roleModules.map((module) => module.module);
-
         await UserLog.create({ user_id: user.id, activity: `User ${username} logged in` });
 
         res.cookie("token", token, { httpOnly: true });
@@ -42,9 +45,19 @@ router.post("/login", async (req, res) => {
             token,
         });
     } catch (error) {
-        console.error('Error creating log entry:', error);
         return res.status(500).json({ error: "Internal Server Error" });
     }
 });
+
+
+router.post('/logout', (req, res) => {
+    try {
+        res.clearCookie('token');
+        res.json({ message: 'Logout successful' });
+    } catch (error) {
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
 
 module.exports = router;

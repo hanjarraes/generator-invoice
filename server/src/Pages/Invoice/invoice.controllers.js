@@ -69,9 +69,8 @@ module.exports = {
         }
     },
 
-
     show: async (req, res) => {
-        const loggedInUser = req.user;
+        const loggedInUser = req.session.userId;
         try {
             const { id } = req.params;
             const invoice = await Invoice.findByPk(id, {
@@ -141,7 +140,7 @@ module.exports = {
     },
 
     store: async (req, res) => {
-        const loggedInUser = req.user;
+        const loggedInUser = req.session.userId;
         try {
             const {
                 invoice_no,
@@ -200,7 +199,7 @@ module.exports = {
 
     update: async (req, res) => {
         const id = req.params.id;
-        const loggedInUser = req.user;
+        const loggedInUser = req.session.userId;
         try {
             const {
                 invoice_no,
@@ -284,10 +283,8 @@ module.exports = {
         }
     },
 
-
-
     delete: async (req, res) => {
-        const loggedInUser = req.user;
+        const loggedInUser = req.session.userId;
         const id = req.params.id;
 
         try {
@@ -325,6 +322,5 @@ module.exports = {
             });
         }
     },
-    
 
 };

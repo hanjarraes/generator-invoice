@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { setAppState } from "../../redux/features/appStateSlice";
+import { setAppState } from "../../store/storeGlobal";
 
 const PageWrapper = (props) => {
   const dispatch = useDispatch();

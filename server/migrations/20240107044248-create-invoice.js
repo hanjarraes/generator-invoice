@@ -60,25 +60,25 @@ module.exports = {
         type: Sequelize.DATE
       },
       discountAmount: {
-        type: Sequelize.INTEGER
+        type: Sequelize.STRING
       },
       discountRate: {
-        type: Sequelize.INTEGER
+        type: Sequelize.STRING
       },
       notes: {
         type: Sequelize.STRING
       },
       subTotal: {
-        type: Sequelize.INTEGER
+        type: Sequelize.STRING
       },
       taxAmount: {
-        type: Sequelize.INTEGER
+        type: Sequelize.STRING
       },
       taxRate: {
-        type: Sequelize.INTEGER
+        type: Sequelize.STRING
       },
       total: {
-        type: Sequelize.INTEGER
+        type: Sequelize.STRING
       },
       created_at: {
         allowNull: false,

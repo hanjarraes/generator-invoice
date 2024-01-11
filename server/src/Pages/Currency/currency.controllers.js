@@ -30,7 +30,7 @@ module.exports = {
 
     show: async (req, res) => {
         const id = req.params.id;
-        const loggedInUser = req.user;
+        const loggedInUser = req.session.userId;
         try {
             const InvoiceCurrencyData = await InvoiceCurrency.findOne({
                 where: { id: id },
@@ -66,7 +66,7 @@ module.exports = {
 
     store: async (req, res) => {
         const { currency, description } = req.body;
-        const loggedInUser = req.user;
+        const loggedInUser = req.session.userId;
 
         try {
             const InvoiceCurrencyData = await InvoiceCurrency.create({
@@ -95,7 +95,7 @@ module.exports = {
     update: async (req, res) => {
         const currencyId = req.params.id;
         const { currency, description } = req.body;
-        const loggedInUser = req.user;
+        const loggedInUser = req.session.userId;
     
         try {
             const InvoiceCurrencyData = await InvoiceCurrency.findByPk(currencyId);
@@ -136,7 +136,7 @@ module.exports = {
     
     delete: async (req, res) => {
         const currencyId = req.params.id;
-        const loggedInUser = req.user;
+        const loggedInUser = req.session.userId;
     
         try {
             const InvoiceCurrencyData = await InvoiceCurrency.findByPk(currencyId);

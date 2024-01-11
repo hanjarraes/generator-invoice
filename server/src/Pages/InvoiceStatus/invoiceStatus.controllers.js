@@ -30,7 +30,7 @@ module.exports = {
 
     show: async (req, res) => {
         const id = req.params.id;
-        const loggedInUser = req.user;
+        const loggedInUser = req.session.userId;
         try {
             const InvoiceStatusData = await InvoiceStatus.findOne({
                 where: { id: id },
@@ -66,7 +66,7 @@ module.exports = {
 
     store: async (req, res) => {
         const { status, description } = req.body;
-        const loggedInUser = req.user;
+        const loggedInUser = req.session.userId;
 
         try {
             const InvoiceStatusData = await InvoiceStatus.create({
@@ -95,7 +95,7 @@ module.exports = {
     update: async (req, res) => {
         const statusId = req.params.id;
         const { status, description } = req.body;
-        const loggedInUser = req.user;
+        const loggedInUser = req.session.userId;
     
         try {
             const InvoiceStatusData = await InvoiceStatus.findByPk(statusId);
@@ -136,7 +136,7 @@ module.exports = {
     
     delete: async (req, res) => {
         const currencyId = req.params.id;
-        const loggedInUser = req.user;
+        const loggedInUser = req.session.userId;
     
         try {
             const InvoiceStatusData = await InvoiceStatus.findByPk(currencyId);

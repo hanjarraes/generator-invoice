@@ -2,6 +2,7 @@ const express = require('express');
 require('dotenv').config();
 const cookieParser = require("cookie-parser");
 const cors = require('cors')
+const session = require('express-session');
 
 // router
 const userRouter = require('./Pages/Users/user.router');
@@ -15,7 +16,7 @@ const invoiceStatusRouter = require('./Pages/InvoiceStatus/invoiceStatus.router'
 const app = express()
 
 const corOptions = {
-    origin: 'https://localhost:3000'
+    origin: 'http://localhost:3000'
 }
 
 // middleware
@@ -28,6 +29,13 @@ app.use(
     })
 );
 app.use(cookieParser());
+
+app.use(session({
+    secret: process.env.MY_SECRET,
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false },
+}));
 
 // API
 app.get('/', (req, res,) => {

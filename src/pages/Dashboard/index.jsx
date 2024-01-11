@@ -1,10 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import InvoiceModal from "../../components/InvoiceForm/InvoiceModal";
-import { dataDummy } from "../../dummyData";
+import { useDispatch, useSelector } from "react-redux";
+import { setInvoiceData } from "../../store/storeGlobal";
 import "./style.scss";
+import { GetData } from "../../Service";
 
 const Dashboard = () => {
+  const dispatch = useDispatch();
   const [showDetail, setShowDetail] = useState();
+  const invoiceData = useSelector((state) => state.global.invoiceData);
   const [isOpen, setIsOpen] = useState(false);
   const closeModal = () => {
     setIsOpen(false)
@@ -14,10 +18,16 @@ const Dashboard = () => {
     setIsOpen(true)
   }
 
+  useEffect(() => {
+    console.log('hai')
+    GetData({ dispatch, setData: setInvoiceData })
+  }, []);
+
+
   return (
     <div className="container">
       <div className="d-flex flex-wrap justify-content-around">
-        {dataDummy.map((item, idx) => {
+        {invoiceData.data.map((item, idx) => {
           return (
             <div className="card-status" key={item.invoice_no + idx} onClick={() => openModal(item.allInfo)}>
               <div className={`title-${item.status}`}>
@@ -26,7 +36,7 @@ const Dashboard = () => {
               <div style={{ padding: '0px 10px', width: '180px' }}>
                 <div>{item.invoice_no}</div>
                 <div>{item.billFrom}</div>
-                <div>{item.allInfo.currency +'. '+item.total}</div>
+                <div>{item.allInfo.currency + '. ' + item.total}</div>
               </div>
             </div>
           )
