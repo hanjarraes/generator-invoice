@@ -19,7 +19,7 @@ const Dashboard = () => {
   }
 
   useEffect(() => {
-    GetData({ dispatch, setData: setInvoiceData })
+    GetData({ dispatch, setData: setInvoiceData, urlApi:'invoice' })
   }, [dispatch]);
 
 
@@ -46,7 +46,7 @@ const Dashboard = () => {
           tableDetail
           showModal={isOpen}
           closeModal={closeModal}
-          info={showDetail}
+          mainState={showDetail}
           items={showDetail.items}
           currency={showDetail.currency}
           subTotal={showDetail.subTotal}

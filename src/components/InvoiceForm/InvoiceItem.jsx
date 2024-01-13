@@ -5,14 +5,18 @@ import Button from 'react-bootstrap/Button';
 import { BiTrash } from "react-icons/bi";
 import EditableField from './EditableField';
 
-const InvoiceItem = ({ onItemizedItemEdit, currency, onRowDel, onRowAdd, items }) => {
+const InvoiceItem = ({ onItemizedItemEdit, currency, onRowDel, onRowAdd, items, setItems, mainState, setMainState }) => {
   const itemTable = items.map(item => (
     <ItemRow
       onItemizedItemEdit={onItemizedItemEdit}
       item={item}
-      onDelEvent={() => onRowDel(item)}
+      onDelEvent={() => onRowDel({ items, setItems, item })}
       key={item.id}
       currency={currency}
+      items={items}
+      setItems={setItems}
+      mainState={mainState}
+      setMainState={setMainState}
     />
   ));
 
@@ -36,7 +40,7 @@ const InvoiceItem = ({ onItemizedItemEdit, currency, onRowDel, onRowAdd, items }
   );
 };
 
-const ItemRow = ({ onItemizedItemEdit, item, onDelEvent, currency }) => {
+const ItemRow = ({ onItemizedItemEdit, item, onDelEvent, currency, items, setItems, mainState, setMainState }) => {
   const handleDelEvent = () => {
     onDelEvent(item);
   };
@@ -45,7 +49,7 @@ const ItemRow = ({ onItemizedItemEdit, item, onDelEvent, currency }) => {
     <tr >
       <td style={{ width: '100%' }}>
         <EditableField
-          onItemizedItemEdit={onItemizedItemEdit}
+          onItemizedItemEdit={(evt) => onItemizedItemEdit({ evt, mainState, setMainState, items, setItems })}
           cellData={{
             type: "text",
             name: "name",
@@ -55,7 +59,7 @@ const ItemRow = ({ onItemizedItemEdit, item, onDelEvent, currency }) => {
           }}
         />
         <EditableField
-          onItemizedItemEdit={onItemizedItemEdit}
+          onItemizedItemEdit={(evt) => onItemizedItemEdit({ evt, mainState, setMainState, items, setItems })}
           cellData={{
             type: "text",
             name: "description",
@@ -67,7 +71,7 @@ const ItemRow = ({ onItemizedItemEdit, item, onDelEvent, currency }) => {
       </td>
       <td style={{ minWidth: '70px' }}>
         <EditableField
-          onItemizedItemEdit={onItemizedItemEdit}
+          onItemizedItemEdit={(evt) => onItemizedItemEdit({ evt, mainState, setMainState, items, setItems })}
           cellData={{
             type: "number",
             name: "quantity",
@@ -80,7 +84,7 @@ const ItemRow = ({ onItemizedItemEdit, item, onDelEvent, currency }) => {
       </td>
       <td style={{ minWidth: '200px' }}>
         <EditableField
-          onItemizedItemEdit={onItemizedItemEdit}
+          onItemizedItemEdit={(evt) => onItemizedItemEdit({ evt, mainState, setMainState, items, setItems })}
           cellData={{
             leading: currency,
             type: "number",

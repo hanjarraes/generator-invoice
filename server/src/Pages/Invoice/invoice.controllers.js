@@ -71,7 +71,7 @@ module.exports = {
     },
 
     show: async (req, res) => {
-        const { userId, username } = req.session.userId;
+        const { userId, username } = req.session;
         try {
             const { id } = req.params;
             const invoice = await Invoice.findByPk(id, {
@@ -142,7 +142,7 @@ module.exports = {
     },
 
     store: async (req, res) => {
-        const { userId, username } = req.session.userId;
+        const { userId, username } = req.session;
         try {
             const {
                 invoice_no,
@@ -204,7 +204,7 @@ module.exports = {
 
     update: async (req, res) => {
         const id = req.params.id;
-        const { userId, username } = req.session.userId;
+        const { userId, username } = req.session;
         try {
             const {
                 invoice_no,
@@ -289,9 +289,8 @@ module.exports = {
     },
 
     delete: async (req, res) => {
-        const { userId, username } = req.session.userId;
-        const id = req.params.id;
-
+        const { userId, username } = req.session;
+        const { id } = req.body;
         try {
 
             const invoiceToDelete = await Invoice.findByPk(id, { include: InvoiceItem });

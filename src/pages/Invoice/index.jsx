@@ -50,14 +50,12 @@ const Invoice = () => {
   );
 
   useEffect(() => {
-    GetData({ dispatch, setData: setInvoiceData })
+    GetData({ dispatch, setData: setInvoiceData, urlApi:'invoice' })
   }, [dispatch]);
 
   const deleteItem = (invoiceId) => {
-    deleteData({dispatch, setData:setInvoiceData, invoiceId})
+    deleteData({dispatch, setData:setInvoiceData, invoiceId, urlApi:'invoice'})
   }
-
-  console.log(invoiceData.data)
 
   return (
     <>

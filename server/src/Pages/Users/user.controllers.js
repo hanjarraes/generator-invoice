@@ -34,7 +34,7 @@ module.exports = {
 
     show: async (req, res) => {
         const id = req.params.id;
-           const { userId, username } = req.session.userId;
+           const { userId, username } = req.session;
 
         try {
             const userData = await User.findOne({
@@ -82,7 +82,7 @@ module.exports = {
 
     store: async (req, res) => {
         const { user_role_id, email, username, password } = req.body;
-           const { userId, usernameID } = req.session.userId;
+           const { userId, usernameID } = req.session;
 
         try {
             const userRoleExists = await UserRole.findByPk(user_role_id);
@@ -135,7 +135,7 @@ module.exports = {
 
     update: async (req, res) => {
         const id = req.params.id;
-           const { userId, usernameId } = req.session.userId;
+           const { userId, usernameId } = req.session;
 
         try {
             const userData = await User.findByPk(id);
@@ -216,7 +216,7 @@ module.exports = {
 
     delete: async (req, res) => {
         const id = req.params.id;
-           const { userId, username } = req.session.userId;
+           const { userId, username } = req.session;
 
         try {
             const deletedUser = await User.findOne({ where: { id: id } });

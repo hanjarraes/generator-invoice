@@ -5,33 +5,16 @@ import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
 import Modal from 'react-bootstrap/Modal';
-import { BiPaperPlane } from "react-icons/bi";
-import html2canvas from 'html2canvas';
-import jsPDF from 'jspdf';
+import { BiPaperPlane, BiSolidCloudDownload } from "react-icons/bi";
 import Logo from '../../logo-Alurnews-02.png'
 import "./style.scss";
-
-const GenerateInvoice = () => {
-  html2canvas(document.querySelector("#invoiceCapture")).then((canvas) => {
-    const imgData = canvas.toDataURL('image/png', 1.0);
-    const pdf = new jsPDF({
-      orientation: 'portrait',
-      unit: 'pt',
-      format: [612, 792]
-    });
-    pdf.internal.scaleFactor = 1;
-    const imgProps = pdf.getImageProperties(imgData);
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-    pdf.save('invoice-001.pdf');
-  });
-}
+import { postData } from '../../Service';
+import { formatDate, formatInvoiceNumber, formatPayload, GenerateInvoice } from './service';
 
 const InvoiceModal = ({
   showModal,
   closeModal,
-  info,
+  mainState,
   currency,
   total,
   items,
@@ -40,6 +23,14 @@ const InvoiceModal = ({
   discountAmmount,
   tableDetail
 }) => {
+  const invoiceNumber = mainState?.invoiceNumber ? formatInvoiceNumber(mainState.invoiceNumber) : mainState.invoiceNo
+
+  const submitInvoice = () => {
+    const payload = formatPayload({ mainState, items })
+    postData({ urlApi: 'invoice', payload })
+    closeModal()
+  };
+
   return (
     <div>
       <Modal show={showModal} onHide={closeModal} size="lg" centered>
@@ -53,26 +44,26 @@ const InvoiceModal = ({
               </div>
             </div>
             <div>
-              Invoice #: {info.invoiceNumber || ''}
+              Invoice #: {invoiceNumber}
             </div>
           </div>
           <div className="p-4">
             <Row className="mb-4">
               <Col md={4}>
                 <div className="fw-bold">Billed to:</div>
-                <div>{info.billTo || ''}</div>
-                <div>{info.billToAddress || ''}</div>
-                <div>{info.billToEmail || ''}</div>
+                <div>{mainState.billTo || ''}</div>
+                <div>{mainState.billToAddress || ''}</div>
+                <div>{mainState.billToEmail || ''}</div>
               </Col>
               <Col md={4}>
                 <div className="fw-bold">Billed From:</div>
-                <div>{info.billFrom || ''}</div>
-                <div>{info.billFromAddress || ''}</div>
-                <div>{info.billFromEmail || ''}</div>
+                <div>{mainState.billFrom || ''}</div>
+                <div>{mainState.billFromAddress || ''}</div>
+                <div>{mainState.billFromEmail || ''}</div>
               </Col>
               <Col md={4}>
                 <div className="fw-bold mt-2">Date Of Issue:</div>
-                <div>{info.dateOfIssue || ''}</div>
+                <div>{formatDate(mainState.dateOfIssue) || ''}</div>
               </Col>
             </Row>
             <Table className="mb-0 table-invoice">
@@ -94,8 +85,8 @@ const InvoiceModal = ({
                       <td>
                         {item.name} - {item.description}
                       </td>
-                      <td className="text-end" style={{ width: '100px' }}>{currency} {parseFloat(item.price).toLocaleString()}</td>
-                      <td className="text-end" style={{ width: '100px' }}>{currency} {parseFloat(item.price * item.quantity).toLocaleString()}</td>
+                      <td className="text-end" style={{ width: '150px' }}>{currency} {parseFloat(item.price).toLocaleString()}</td>
+                      <td className="text-end" style={{ width: '150px' }}>{currency} {parseFloat(item.price * item.quantity).toLocaleString()}</td>
                     </tr>
                   );
                 })}
@@ -118,18 +109,19 @@ const InvoiceModal = ({
                   <span>SUBTOTAL</span>
                   <div className='item-total'>{currency} {subTotal}</div>
                 </div>
-                {taxAmmount !== '0.00' &&
+                {taxAmmount !== '0.00' && taxAmmount !== '0' && (
                   <div className='modal-text-item'>
                     <span>TAX</span>
                     <div className='item-total'>{currency} {taxAmmount}</div>
                   </div>
-                }
-                {discountAmmount !== '0.00' &&
+                )}
+
+                {discountAmmount !== '0.00' && discountAmmount !== '0' && (
                   <div className='modal-text-item'>
                     <span>DISCOUNT</span>
                     <div className='item-total'>{currency} {discountAmmount}</div>
                   </div>
-                }
+                )}
 
                 <div className='modal-text-item'>
                   <span>TOTAL</span>
@@ -138,9 +130,9 @@ const InvoiceModal = ({
 
               </Col>
             </Row>
-            {info.notes &&
+            {mainState.notes &&
               <div className="bg-light py-3 px-4 rounded">
-                {info.notes}
+                {mainState.notes}
               </div>}
 
             <Row className='mt-4'>
@@ -157,18 +149,45 @@ const InvoiceModal = ({
         </div>
         <div className="pb-4 px-4">
           <Row>
-            {tableDetail ?
-              <Col md={6}>
-                <Button variant="primary" className="d-block w-100" onClick={closeModal} onKeyDown={closeModal} onKeyUp={closeModal}>
-                  <BiPaperPlane style={{ width: '15px', height: '15px', marginTop: '-3px' }} className="me-2" />Close
-                </Button>
-              </Col>
+            {tableDetail ? mainState.status === 'Ok' ?
+              (
+                <>
+                  <Col md={6}>
+                    <Button variant="secondary" className="d-block w-100" onClick={closeModal} onKeyDown={closeModal} onKeyUp={closeModal}>
+                      <BiPaperPlane style={{ width: '15px', height: '15px', marginTop: '-3px' }} className="me-2" />Close
+                    </Button>
+                  </Col>
+                  <Col md={6}>
+                    <Button variant="primary" className="d-block w-100" onClick={() => GenerateInvoice(mainState)}>
+                      <BiSolidCloudDownload style={{ width: '15px', height: '15px', marginTop: '-3px' }} className="me-2" />Download
+                    </Button>
+                  </Col>
+                </>
+              )
               :
-              <Col md={6}>
-                <Button variant="primary" className="d-block w-100" onClick={GenerateInvoice}>
-                  <BiPaperPlane style={{ width: '15px', height: '15px', marginTop: '-3px' }} className="me-2" />Send Invoice
-                </Button>
-              </Col>}
+              (
+                <>
+                  <Col md={6}>
+                    <Button variant="primary" className="d-block w-100" onClick={closeModal} onKeyDown={closeModal} onKeyUp={closeModal}>
+                      <BiPaperPlane style={{ width: '15px', height: '15px', marginTop: '-3px' }} className="me-2" />Close
+                    </Button>
+                  </Col>
+                </>
+              )
+              :
+              <>
+                <Col md={6}>
+                  <Button variant="secondary" className="d-block w-100" onClick={closeModal} onKeyDown={closeModal} onKeyUp={closeModal}>
+                    Close
+                  </Button>
+                </Col>
+                <Col md={6}>
+                  <Button variant="primary" className="d-block w-100" onClick={() => submitInvoice({ mainState, items })}>
+                    <BiPaperPlane style={{ width: '15px', height: '15px', marginTop: '-3px' }} className="me-2" />Send Invoice
+                  </Button>
+                </Col>
+              </>
+            }
           </Row>
         </div>
       </Modal>

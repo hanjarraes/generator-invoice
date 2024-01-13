@@ -1,32 +1,27 @@
 import React, { useState } from "react";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import Dialog from '@mui/material/Dialog';
+import Slide from '@mui/material/Slide';
 import * as XLSX from "xlsx";
 import "./style.scss";
 import InvoiceModal from "../InvoiceForm/InvoiceModal";
+import { formatDate } from "./service";
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 const Table = ({ columns, data, deleteItem }) => {
   const [sortColumn, setSortColumn] = useState(null);
   const [sortDirection, setSortDirection] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
+  const [isOpenDelete, setisOpenDelete] = useState(false);
+  const [itemDelete, setItemDelete] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchValue, setSearchValue] = useState("");
   const [showDetail, setShowDetail] = useState();
   const itemsPerPage = 10;
-
-  const handleSort = (column) => {
-    if (column === sortColumn) {
-      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
-    } else {
-      setSortColumn(column);
-      setSortDirection("asc");
-    }
-  };
-
-  const handleSearch = (e) => {
-    setCurrentPage(1);
-    setSearchValue(e.target.value);
-  };
 
   const sortedData = sortColumn
     ? [...data].sort((a, b) => {
@@ -64,11 +59,16 @@ const Table = ({ columns, data, deleteItem }) => {
   }
 
   const exportToExcel = () => {
+    const currentDate = new Date();
+    const formattedDate = `${currentDate.getDate()}-${currentDate.toLocaleString('en', { month: 'short' })}-${currentDate.getFullYear()}`;
+    const fileName = `alurnews ${formattedDate}.xlsx`;
+
     const worksheet = XLSX.utils.json_to_sheet(filteredData);
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
-    XLSX.writeFile(workbook, "data.xlsx");
+    XLSX.utils.book_append_sheet(workbook, worksheet, `alurnews ${formattedDate}`);
+    XLSX.writeFile(workbook, fileName);
   };
+
 
   const closeModal = () => {
     setIsOpen(false)
@@ -76,6 +76,25 @@ const Table = ({ columns, data, deleteItem }) => {
   const openModal = (items) => {
     setShowDetail(items)
     setIsOpen(true)
+  }
+
+  const handleSort = (column) => {
+    if (column === sortColumn) {
+      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
+    } else {
+      setSortColumn(column);
+      setSortDirection("asc");
+    }
+  };
+
+  const handleSearch = (e) => {
+    setCurrentPage(1);
+    setSearchValue(e.target.value);
+  };
+
+  const handleDelete = (e) => {
+    setItemDelete(e)
+    setisOpenDelete(true)
   }
 
   return (
@@ -130,15 +149,30 @@ const Table = ({ columns, data, deleteItem }) => {
             {currentItems.map((item, index) => (
               <tr key={index}>
                 {columns?.map((column) => {
-                  if (column.accessor  === "status") {
+                  if (column.accessor === "status") {
                     return (
-                      <td key={`${column.accessor}-${index}`}>
+                      <td onClick={() => openModal(item.allInfo)} key={`${column.accessor}-${index}`}>
                         <div className={`status-${item[column.accessor]}`}>
                           {item[column.accessor]}
                         </div>
                       </td>
                     );
-                  } 
+                  }
+                  if (column.accessor === "total") {
+                    return (
+                      <td onClick={() => openModal(item.allInfo)} key={`${column.accessor}-${index}`}>
+                        {item.allInfo.currency + ' ' + item[column.accessor]}
+                      </td>
+                    );
+                  }
+                  if (column.accessor === "current_date" || column.accessor === "due_date") {
+                    console.log(formatDate(item[column.accessor]))
+                    return (
+                      <td onClick={() => openModal(item.allInfo)} key={`${column.accessor}-${index}`}>
+                        {item[column.accessor]}
+                      </td>
+                    );
+                  }
                   return (
                     <td onClick={() => openModal(item.allInfo)} key={`${column.accessor}-${index}`}>
                       {item[column.accessor]}
@@ -148,7 +182,7 @@ const Table = ({ columns, data, deleteItem }) => {
                 <td>
                   <div>
                     <EditIcon className="edit-icon" />
-                    <DeleteIcon onClick={()=> deleteItem(item.id)} className="delete-icon" />
+                    <DeleteIcon onClick={() => handleDelete(item.id)} className="delete-icon" />
                   </div>
                 </td>
               </tr>
@@ -230,7 +264,7 @@ const Table = ({ columns, data, deleteItem }) => {
           tableDetail
           showModal={isOpen}
           closeModal={closeModal}
-          info={showDetail}
+          mainState={showDetail}
           items={showDetail.items}
           currency={showDetail.currency}
           subTotal={showDetail.subTotal}
@@ -238,6 +272,29 @@ const Table = ({ columns, data, deleteItem }) => {
           discountAmmount={showDetail.discountAmount}
           total={showDetail.total} />
       }
+      <Dialog
+        open={isOpenDelete}
+        TransitionComponent={Transition}
+        keepMounted
+        onClose={() => setisOpenDelete(false)}
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <div className="modal-delete">
+          <div className="d-flex justify-content-end">
+            <i className="ri-close-line" />
+          </div>
+          <div className="content">
+            <div className="content-title">Are You Sure 🫤</div>
+            <div className="footer-btn">
+              <button className="btn btn-cancel" onClick={() => setisOpenDelete(false)}>Cancel</button>
+              <button className="btn btn-delete" onClick={() => {
+                deleteItem(itemDelete)
+                setisOpenDelete(false)
+              }}>Delete</button>
+            </div>
+          </div>
+        </div>
+      </Dialog>
     </>
   );
 };

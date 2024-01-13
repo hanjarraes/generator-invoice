@@ -49,6 +49,7 @@
           color: #8ADAB2;
           border: 1px solid #8ADAB2;
         }
+
         .status-Waiting {
           background: #fff;
           display: flex;
@@ -59,6 +60,7 @@
           color: #FFC47E;
           border: 1px solid #FFC47E;
         }
+
         .status-Rejected {
           background: #fff;
           display: flex;
@@ -163,6 +165,54 @@
 
       &:focus {
         border: 1px solid #bf0000b7;
+      }
+    }
+  }
+}
+
+.modal-delete {
+  .ri-close-line {
+    padding: 0px 5px 0px 0px;
+    font-size: 28px;
+  }
+
+  .content {
+    padding: 0 10px;
+    margin-bottom: 10px;
+
+    .content-title {
+      font-size: 28px;
+    }
+
+    .footer-btn {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 15px;
+
+      .btn-delete {
+        background-color: #bf0000b7;
+        color: #fff;
+        height: 38px;
+        border: 1px solid;
+        box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px,
+          rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+
+        &:hover {
+          background-color: #fff;
+          color: #bf0000b7;
+          border: 1px solid #bf0000b7;
+        }
+      }
+      .btn-cancel {
+        background-color: #fff;
+        color: #000;
+        height: 38px;
+        border: 1px solid #000;
+        &:hover {
+          background-color: #8ADAB2;
+          color: #fff;
+          border: 1px solid #fff;
+        }
       }
     }
   }

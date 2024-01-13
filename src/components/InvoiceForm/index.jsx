@@ -8,24 +8,40 @@ import Card from 'react-bootstrap/Card';
 import InvoiceItem from './InvoiceItem';
 import InvoiceModal from './InvoiceModal';
 import InputGroup from 'react-bootstrap/InputGroup';
+import { useDispatch, useSelector } from "react-redux";
 import "./style.scss";
+import { GetData } from '../../Service';
+import { setCurrency } from '../../store/storeGlobal';
+import {
+  handleAddEvent,
+  handleRowDel,
+  handleCalculateTotal,
+  onCurrencyChange,
+  editField,
+  onItemizedItemEdit
+} from './service';
 
 const InvoiceForm = () => {
+  const dispatch = useDispatch();
+  const currencyData = useSelector((state) => state.global.currencyData);
   const [mainState, setMainState] = useState({
     isOpen: false,
+    invoice_currency_id: 1,
     currency: 'Rp',
     currentDate: new Date().toISOString().slice(0, 10),
     invoiceNumber: 1,
-    dateOfIssue: '',
+    dateOfIssue: new Date().toISOString().slice(0, 10),
     nameBank: '',
     idBank: '',
+    invoice_status_id: 2,
+    status: 'Waiting',
     billTo: '',
     billToEmail: '',
     billToAddress: '',
     billFrom: '',
     billFromEmail: '',
     billFromAddress: '',
-    notes: '',
+    notes: 'Thanks for your business!',
     total: '0',
     subTotal: '0',
     taxRate: '',
@@ -43,88 +59,9 @@ const InvoiceForm = () => {
     }
   ]);
 
-  useEffect(() => {
-    handleCalculateTotal();
-  }, [items, mainState.taxRate, mainState.discountRate]);
-
-  const handleRowDel = (item) => {
-    const updatedItems = items.filter(i => i.id !== item.id);
-    setItems(updatedItems);
-  };
-
-  const handleIsSignatureChange = () => {
-    setMainState(prevState => ({
-      ...prevState,
-      isSignature: !prevState.isSignature
-    }));
-  };
-
-  const handleAddEvent = () => {
-    const id = items.length + 1;
-    const newItem = {
-      id: id,
-      name: '',
-      price: '1',
-      description: '',
-      quantity: 1
-    };
-    setItems([...items, newItem]);
-  }
-
-  const handleCalculateTotal = () => {
-    const subTotalValue = items.reduce((acc, item) => {
-      return acc + (parseFloat(item.price) * parseInt(item.quantity));
-    }, 0);
-
-    const subTotalFloat = parseFloat(subTotalValue);
-    const taxAmountFloat = (subTotalFloat * (parseFloat(mainState.taxRate === '' ? '0.0' : mainState.taxRate) / 100));
-    const discountAmountFloat = (subTotalFloat * (parseFloat(mainState.discountRate === '' ? '0.0' : mainState.discountRate) / 100));
-    const totalFloat = (subTotalFloat - discountAmountFloat + parseFloat(taxAmountFloat));
-
-
-    setMainState(prevState => ({
-      ...prevState,
-      subTotal: subTotalFloat.toLocaleString(),
-      taxAmount: taxAmountFloat.toLocaleString(),
-      discountAmount: discountAmountFloat.toLocaleString(),
-      total: totalFloat.toLocaleString()
-    }));
-  };
-
-  const onItemizedItemEdit = (evt) => {
-    const { id, name, value } = evt.target;
-    const newItems = items.map(item => {
-      if (item.id === parseInt(id)) {
-        return {
-          ...item,
-          [name]: value
-        };
-      }
-      return item;
-    });
-    setItems(newItems);
-    handleCalculateTotal();
-  };
-
-  const editField = (event) => {
-    const { name, value } = event.target;
-    setMainState(prevState => ({
-      ...prevState,
-      [name]: value
-    }));
-    handleCalculateTotal();
-  };
-
-  const onCurrencyChange = (event) => {
-    setMainState(prevState => ({
-      ...prevState,
-      currency: event.target.value
-    }));
-  };
-
   const openModal = (event) => {
     event.preventDefault();
-    handleCalculateTotal();
+    handleCalculateTotal({ mainState, setMainState, items });
     setMainState(prevState => ({
       ...prevState,
       isOpen: true
@@ -135,6 +72,14 @@ const InvoiceForm = () => {
     ...prevState,
     isOpen: false
   }));
+
+  useEffect(() => {
+    GetData({ dispatch, setData: setCurrency, urlApi: 'currency' })
+  }, [dispatch]);
+
+  useEffect(() => {
+    handleCalculateTotal({ mainState, setMainState, items });
+  }, [items, mainState.taxRate, mainState.discountRate]);
 
   return (
     <>
@@ -156,7 +101,7 @@ const InvoiceForm = () => {
                         type="date"
                         value={mainState.dateOfIssue}
                         name={"dateOfIssue"}
-                        onChange={editField}
+                        onChange={(event) => editField({ event, setMainState, mainState, items })}
                         style={{ maxWidth: '150px' }}
                         required="required" />
                     </Col>
@@ -169,7 +114,7 @@ const InvoiceForm = () => {
                     type="number"
                     value={mainState.invoiceNumber}
                     name={"invoiceNumber"}
-                    onChange={editField} min="1" style={{ maxWidth: '70px' }}
+                    onChange={(event) => editField({ event, setMainState, mainState, items })} min="1" style={{ maxWidth: '70px' }}
                     required="required" />
                 </Col>
               </Row>
@@ -184,7 +129,7 @@ const InvoiceForm = () => {
                     value={mainState.billTo}
                     type="text"
                     name="billTo"
-                    onChange={editField}
+                    onChange={(event) => editField({ event, setMainState, mainState, items })}
                     autoComplete="name"
                     required
                   />
@@ -194,7 +139,7 @@ const InvoiceForm = () => {
                     value={mainState.billToEmail}
                     type="email"
                     name="billToEmail"
-                    onChange={editField}
+                    onChange={(event) => editField({ event, setMainState, mainState, items })}
                     autoComplete="email"
                     required
                   />
@@ -205,7 +150,7 @@ const InvoiceForm = () => {
                     type="text"
                     name="billToAddress"
                     autoComplete="address"
-                    onChange={editField}
+                    onChange={(event) => editField({ event, setMainState, mainState, items })}
                     required
                   />
                 </Col>
@@ -218,7 +163,7 @@ const InvoiceForm = () => {
                     value={mainState.billFrom}
                     type="text"
                     name="billFrom"
-                    onChange={editField}
+                    onChange={(event) => editField({ event, setMainState, mainState, items })}
                     autoComplete="name"
                     required
                   />
@@ -228,7 +173,7 @@ const InvoiceForm = () => {
                     value={mainState.billFromEmail}
                     type="email"
                     name="billFromEmail"
-                    onChange={editField}
+                    onChange={(event) => editField({ event, setMainState, mainState, items })}
                     autoComplete="email"
                     required
                   />
@@ -239,7 +184,7 @@ const InvoiceForm = () => {
                     type="text"
                     name="billFromAddress"
                     autoComplete="address"
-                    onChange={editField}
+                    onChange={(event) => editField({ event, setMainState, mainState, items })}
                     required
                   />
                 </Col>
@@ -257,7 +202,7 @@ const InvoiceForm = () => {
                         step="0.01"
                         max="100"
                         value={mainState.taxRate}
-                        onChange={editField}
+                        onChange={(event) => editField({ event, setMainState, mainState, items })}
                       />
                       <InputGroup.Text className="bg-light fw-bold text-secondary small">
                         %
@@ -277,7 +222,7 @@ const InvoiceForm = () => {
                         step="0.01"
                         max="100"
                         value={mainState.discountRate}
-                        onChange={editField}
+                        onChange={(event) => editField({ event, setMainState, mainState, items })}
                       />
                       <InputGroup.Text className="bg-light fw-bold text-secondary small">
                         %
@@ -288,30 +233,39 @@ const InvoiceForm = () => {
                 <Col md={4}>
                   <Form.Group className="mb-3">
                     <Form.Select
-                      onChange={event => onCurrencyChange(event)}
+                      onChange={event => onCurrencyChange(({ event, setMainState }))}
                       className="btn btn-light my-1"
                       aria-label="Change Currency"
                     >
-                      <option value="Rp">RP (Indonesia Rupiah)</option>
-                      <option value="$">USD (United States Dollar)</option>
-                      <option value="£">GBP (British Pound Sterling)</option>
-                      <option value="¥">JPY (Japanese Yen)</option>
-                      <option value="$">CAD (Canadian Dollar)</option>
-                      <option value="$">AUD (Australian Dollar)</option>
-                      <option value="$">SGD (Signapore Dollar)</option>
-                      <option value="¥">CNY (Chinese Renminbi)</option>
-                      <option value="₿">BTC (Bitcoin)</option>
+                      {currencyData.data.map((data, idx) => {
+                        const newDataString = JSON.stringify({
+                          id: data.id,
+                          currency: data.currency
+                        });
+                        return (
+                          <option
+                            key={`currency-${data.currency}-${idx}`}
+                            value={newDataString}
+                          >
+                            {data.currency} ({data.description})
+                          </option>
+                        )
+                      })}
                     </Form.Select>
                   </Form.Group>
                 </Col>
               </Row>
-              
+
               <InvoiceItem
                 onItemizedItemEdit={onItemizedItemEdit}
-                onRowAdd={handleAddEvent}
+                onRowAdd={() => handleAddEvent({ items, setItems })}
                 onRowDel={handleRowDel}
                 currency={mainState.currency}
-                items={items} />
+                items={items}
+                setItems={setItems}
+                mainState={mainState}
+                setMainState={setMainState}
+              />
 
               <Row className="mt-4 justify-content-end">
                 <Col lg={6}>
@@ -353,22 +307,10 @@ const InvoiceForm = () => {
                 placeholder="Thanks for your business!"
                 name="notes"
                 value={mainState.notes}
-                onChange={editField}
+                onChange={(event) => editField({ event, setMainState, mainState, items })}
                 as="textarea"
                 rows={1} />
               <div className='mt-3 d-flex align-items-center justify-content-end'>
-                <div className="form-check pe-4">
-                  <input
-                    className="form-check-input"
-                    type="checkbox"
-                    value={mainState.isSignature}
-                    onChange={handleIsSignatureChange}
-                    id="flexCheckDefault"
-                  />
-                  <label className="form-check-label" htmlFor="flexCheckDefault">
-                    With Signature
-                  </label>
-                </div>
                 <Button variant="primary" type="submit">Review Invoice</Button>
               </div>
             </Card>
@@ -377,7 +319,7 @@ const InvoiceForm = () => {
         <InvoiceModal
           showModal={mainState.isOpen}
           closeModal={closeModal}
-          info={mainState}
+          mainState={mainState}
           items={items}
           currency={mainState.currency}
           subTotal={mainState.subTotal}

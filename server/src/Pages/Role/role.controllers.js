@@ -33,7 +33,7 @@ module.exports = {
 
     show: async (req, res) => {
         const id = req.params.id;
-        const { userId, username } = req.session.userId;
+        const { userId, username } = req.session;
 
         try {
             const userRoleData = await UserRole.findByPk(id, {
@@ -69,7 +69,7 @@ module.exports = {
 
     store: async (req, res) => {
         const { role, description, module } = req.body;
-        const { userId, username } = req.session.userId;
+        const { userId, username } = req.session;
 
         try {
             const userRole = await UserRole.create({
@@ -106,7 +106,7 @@ module.exports = {
     update: async (req, res) => {
         const id = req.params.id;
         const { role, description, module } = req.body;
-        const { userId, username } = req.session.userId;
+        const { userId, username } = req.session;
 
         const newDataRespon = {
             id: id,
@@ -178,7 +178,7 @@ module.exports = {
 
     delete: async (req, res) => {
         const roleId = req.params.id;
-        const { userId, username } = req.session.userId;
+        const { userId, username } = req.session;
 
         try {
             const userRole = await UserRole.findByPk(roleId);

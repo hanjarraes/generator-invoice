@@ -11,6 +11,6 @@ router.route('/invoice')
 
 router.get('/invoice/:id/', cookieJwtAuth, invoiceController.show);
 router.put('/invoice/:id/', cookieJwtAuth, invoiceController.update);
-router.delete('/invoice/:id', cookieJwtAuth, invoiceController.delete);
+router.delete('/invoice', cookieJwtAuth, invoiceController.delete);
 
 module.exports = router;
