@@ -5,7 +5,7 @@ import * as XLSX from "xlsx";
 import "./style.scss";
 import InvoiceModal from "../InvoiceForm/InvoiceModal";
 
-const Table = ({ columns, data }) => {
+const Table = ({ columns, data, deleteItem }) => {
   const [sortColumn, setSortColumn] = useState(null);
   const [sortDirection, setSortDirection] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -50,13 +50,13 @@ const Table = ({ columns, data }) => {
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = filteredData?.slice(indexOfFirstItem, indexOfLastItem);
 
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
 
-  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+  const totalPages = Math.ceil(filteredData?.length / itemsPerPage);
   const pageNumbers = [];
 
   for (let i = 1; i <= totalPages; i++) {
@@ -148,7 +148,7 @@ const Table = ({ columns, data }) => {
                 <td>
                   <div>
                     <EditIcon className="edit-icon" />
-                    <DeleteIcon className="delete-icon" />
+                    <DeleteIcon onClick={()=> deleteItem(item.id)} className="delete-icon" />
                   </div>
                 </td>
               </tr>

@@ -17,6 +17,7 @@ router.post("/login", async (req, res) => {
 
         // Set user ID in the session
         req.session.userId = user.id;
+        req.session.username = user.username;
 
         delete user.password;
 

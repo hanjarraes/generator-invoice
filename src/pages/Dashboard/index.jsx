@@ -19,15 +19,14 @@ const Dashboard = () => {
   }
 
   useEffect(() => {
-    console.log('hai')
     GetData({ dispatch, setData: setInvoiceData })
-  }, []);
+  }, [dispatch]);
 
 
   return (
     <div className="container">
       <div className="d-flex flex-wrap justify-content-around">
-        {invoiceData.data.map((item, idx) => {
+        {invoiceData?.data.map((item, idx) => {
           return (
             <div className="card-status" key={item.invoice_no + idx} onClick={() => openModal(item.allInfo)}>
               <div className={`title-${item.status}`}>

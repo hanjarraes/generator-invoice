@@ -29,13 +29,23 @@ export const logoutUser = async ({ dispatch, setData, navigate }) => {
     }
 };
 
-export const GetData = async ({dispatch, setData }) => {
+export const GetData = async ({ dispatch, setData }) => {
     try {
         const response = await axios.get(`${process.env.REACT_APP_API_URL}/invoice`);
-        console.log(response)
         dispatch(setData(response.data));
     } catch (error) {
         console.error('Failed to fetch invoices', error);
+        throw error;
+    }
+};
+
+
+export const deleteData = async ({ dispatch, setData, invoiceId }) => {
+    try {
+        const response = await axios.delete(`/invoice/${invoiceId}`);
+        dispatch(setData(response.data));
+    } catch (error) {
+        console.error('Failed to delete invoice', error);
         throw error;
     }
 };

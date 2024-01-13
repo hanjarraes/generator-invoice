@@ -30,7 +30,7 @@ module.exports = {
 
     show: async (req, res) => {
         const id = req.params.id;
-        const loggedInUser = req.session.userId;
+        const { userId, username } = req.session.userId;
         try {
             const InvoiceStatusData = await InvoiceStatus.findOne({
                 where: { id: id },
@@ -46,8 +46,8 @@ module.exports = {
 
             // log
             await UserLog.create({
-                user_id: loggedInUser.id,
-                activity: `Showing data for Curreny ID ${id} by ${loggedInUser.username}`
+                user_id: userId,
+                activity: `Showing data for Curreny ID ${id} by ${username}`
             });
 
             return res.json({
@@ -66,7 +66,7 @@ module.exports = {
 
     store: async (req, res) => {
         const { status, description } = req.body;
-        const loggedInUser = req.session.userId;
+        const { userId, username } = req.session.userId;
 
         try {
             const InvoiceStatusData = await InvoiceStatus.create({
@@ -75,7 +75,7 @@ module.exports = {
             });
 
             // log
-            await UserLog.create({ activity: `Creating new Status ${status} by ${loggedInUser.username}` });
+            await UserLog.create({ user_id: userId, activity: `Creating new Status ${status} by ${username}` });
 
             res.json({
                 data: { InvoiceStatusData },
@@ -95,11 +95,11 @@ module.exports = {
     update: async (req, res) => {
         const statusId = req.params.id;
         const { status, description } = req.body;
-        const loggedInUser = req.session.userId;
-    
+        const { userId, username } = req.session.userId;
+
         try {
             const InvoiceStatusData = await InvoiceStatus.findByPk(statusId);
-    
+
             if (!InvoiceStatusData) {
                 return res.status(404).json({
                     status: 404,
@@ -107,18 +107,18 @@ module.exports = {
                     url: req.url,
                 });
             }
-    
+
             await InvoiceStatusData.update({
                 status: status,
                 description: description,
             });
-    
+
             // Log the update activity
             await UserLog.create({
-                user_id: loggedInUser.id,
-                activity: `Updating status ID ${statusId} by ${loggedInUser.username}`
+                user_id: userId,
+                activity: `Updating status ID ${statusId} by ${username}`
             });
-    
+
             res.json({
                 data: { InvoiceStatusData },
                 status: 200,
@@ -133,14 +133,14 @@ module.exports = {
             });
         }
     },
-    
+
     delete: async (req, res) => {
         const currencyId = req.params.id;
-        const loggedInUser = req.session.userId;
-    
+        const { userId, username } = req.session.userId;
+
         try {
             const InvoiceStatusData = await InvoiceStatus.findByPk(currencyId);
-    
+
             if (!InvoiceStatusData) {
                 return res.status(404).json({
                     status: 404,
@@ -148,15 +148,15 @@ module.exports = {
                     url: req.url,
                 });
             }
-    
+
             await InvoiceStatus.destroy({ where: { id: currencyId } });
-    
+
             // Log the deletion activity
             await UserLog.create({
-                user_id: loggedInUser.id,
-                activity: `Deleting Currency ID ${currencyId} by ${loggedInUser.username}`
+                user_id: userId,
+                activity: `Deleting Currency ID ${currencyId} by ${username}`
             });
-    
+
             res.json({
                 data: { InvoiceStatusData },
                 status: 200,
@@ -171,5 +171,5 @@ module.exports = {
             });
         }
     },
-    
+
 };

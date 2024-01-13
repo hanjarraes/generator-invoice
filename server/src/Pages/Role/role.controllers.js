@@ -33,16 +33,16 @@ module.exports = {
 
     show: async (req, res) => {
         const id = req.params.id;
-        const loggedInUser = req.session.userId;
+        const { userId, username } = req.session.userId;
 
         try {
             const userRoleData = await UserRole.findByPk(id, {
-                include: RoleModule, 
+                include: RoleModule,
             });
 
             if (userRoleData) {
                 // log
-                await UserLog.create({ user_id: loggedInUser.id, activity: `Showing data for Role ID ${id} by ${loggedInUser.username}` });
+                await UserLog.create({ user_id: userId, activity: `Showing data for Role ID ${id} by ${username}` });
 
                 return res.json({
                     data: userRoleData,
@@ -69,7 +69,7 @@ module.exports = {
 
     store: async (req, res) => {
         const { role, description, module } = req.body;
-        const loggedInUser = req.session.userId;
+        const { userId, username } = req.session.userId;
 
         try {
             const userRole = await UserRole.create({
@@ -86,7 +86,7 @@ module.exports = {
             }));
 
             // log
-            await UserLog.create({ activity: `Creating new Role ${role} by ${loggedInUser.username}` });
+            await UserLog.create({ user_id: userId, activity: `Creating new Role ${role} by ${username}` });
 
             res.json({
                 data: { userRole, createdModules },
@@ -106,7 +106,7 @@ module.exports = {
     update: async (req, res) => {
         const id = req.params.id;
         const { role, description, module } = req.body;
-        const loggedInUser = req.session.userId;
+        const { userId, username } = req.session.userId;
 
         const newDataRespon = {
             id: id,
@@ -159,7 +159,7 @@ module.exports = {
             });
 
             // Log
-            await UserLog.create({ activity: `Updating Role ${role} by ${loggedInUser.username}` });
+            await UserLog.create({ user_id: userId, activity: `Updating Role ${role} by ${username}` });
 
             res.json({
                 data: newDataRespon,
@@ -178,7 +178,7 @@ module.exports = {
 
     delete: async (req, res) => {
         const roleId = req.params.id;
-        const loggedInUser = req.session.userId;
+        const { userId, username } = req.session.userId;
 
         try {
             const userRole = await UserRole.findByPk(roleId);
@@ -199,8 +199,8 @@ module.exports = {
 
             // Log the deletion activity
             await UserLog.create({
-                user_id: loggedInUser.id,
-                activity: `Deleting User Role ID ${roleId} by ${loggedInUser.username}`
+                user_id: userId,
+                activity: `Deleting User Role ID ${roleId} by ${username}`
             });
 
             res.json({

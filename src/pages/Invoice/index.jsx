@@ -1,11 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Table from "../../components/Table";
 import { useNavigate } from "react-router-dom";
-import { dataDummy } from "../../dummyData";
+import { useDispatch, useSelector } from "react-redux";
+import { setInvoiceData } from "../../store/storeGlobal";
 import "./style.scss";
+import { GetData, deleteData } from "../../Service";
 
 const Invoice = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate()
+  const invoiceData = useSelector((state) => state.global.invoiceData);
 
   const columns = React.useMemo(
     () => [
@@ -45,6 +49,16 @@ const Invoice = () => {
     []
   );
 
+  useEffect(() => {
+    GetData({ dispatch, setData: setInvoiceData })
+  }, [dispatch]);
+
+  const deleteItem = (invoiceId) => {
+    deleteData({dispatch, setData:setInvoiceData, invoiceId})
+  }
+
+  console.log(invoiceData.data)
+
   return (
     <>
       <div className="d-flex justify-content-between align-items-center">
@@ -54,7 +68,7 @@ const Invoice = () => {
           <i className="ri-add-line mx-1 d-block d-md-none" />
         </button>
       </div>
-      <Table columns={columns} data={dataDummy} />
+      <Table columns={columns} data={invoiceData.data} deleteItem={deleteItem} />
     </>
   );
 };

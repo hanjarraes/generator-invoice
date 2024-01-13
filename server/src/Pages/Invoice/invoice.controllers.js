@@ -14,6 +14,7 @@ module.exports = {
 
             if (invoices) {
                 const newResponseData = invoices.map(invoice => ({
+                    id: invoice.id,
                     invoice_no: invoice.invoiceNo,
                     billFrom: invoice.billFrom,
                     billFromEmail: invoice.billFromEmail,
@@ -70,7 +71,7 @@ module.exports = {
     },
 
     show: async (req, res) => {
-        const loggedInUser = req.session.userId;
+        const { userId, username } = req.session.userId;
         try {
             const { id } = req.params;
             const invoice = await Invoice.findByPk(id, {
@@ -82,8 +83,9 @@ module.exports = {
             });
 
             if (invoice) {
-                await UserLog.create({ user_id: loggedInUser.id, activity: `Showing data for invoice ID ${id} by ${loggedInUser.username}` });
+                await UserLog.create({ user_id: userId, activity: `Showing data for invoice ID ${id} by ${username}` });
                 const responseData = {
+                    id: invoice.id,
                     invoice_no: invoice.invoiceNo,
                     billFrom: invoice.billFrom,
                     billFromEmail: invoice.billFromEmail,
@@ -140,7 +142,7 @@ module.exports = {
     },
 
     store: async (req, res) => {
-        const loggedInUser = req.session.userId;
+        const { userId, username } = req.session.userId;
         try {
             const {
                 invoice_no,
@@ -179,7 +181,10 @@ module.exports = {
                 });
             }));
 
-            await UserLog.create({ user_id: loggedInUser.id, activity: `Create data for invoice ID ${invoice_no} by ${loggedInUser.username}` });
+            await UserLog.create({
+                user_id: userId,
+                activity: `Create data for invoice ID ${invoice_no} by ${username}`
+            });
 
             res.status(201).json({
                 data: { newInvoice, createdInvoiceItems },
@@ -199,7 +204,7 @@ module.exports = {
 
     update: async (req, res) => {
         const id = req.params.id;
-        const loggedInUser = req.session.userId;
+        const { userId, username } = req.session.userId;
         try {
             const {
                 invoice_no,
@@ -265,7 +270,7 @@ module.exports = {
                 }
             }));
 
-            await UserLog.create({ user_id: loggedInUser.id, activity: `Update data for invoice ID ${id} by ${loggedInUser.username}` });
+            await UserLog.create({ user_id: userId.id, activity: `Update data for invoice ID ${id} by ${username}` });
 
             res.status(200).json({
                 data: updatedInvoice,
@@ -284,13 +289,13 @@ module.exports = {
     },
 
     delete: async (req, res) => {
-        const loggedInUser = req.session.userId;
+        const { userId, username } = req.session.userId;
         const id = req.params.id;
 
         try {
-    
+
             const invoiceToDelete = await Invoice.findByPk(id, { include: InvoiceItem });
-    
+
             if (!invoiceToDelete) {
                 return res.status(404).json({
                     status: 404,
@@ -298,27 +303,70 @@ module.exports = {
                     url: req.url,
                 });
             }
-    
+
             await Promise.all(invoiceToDelete.InvoiceItems.map(async item => {
                 await InvoiceItem.destroy({ where: { id: item.id } });
             }));
-    
+
             await invoiceToDelete.destroy();
-    
-            await UserLog.create({ user_id: loggedInUser.id, activity: `Delete data for invoice ID ${id} by ${loggedInUser.username}` });
-    
+
+            await UserLog.create({ user_id: userId, activity: `Delete data for invoice ID ${id} by ${username}` });
+
+            const invoices = await Invoice.findAll({
+                include: [
+                    { model: InvoiceStatus },
+                    { model: InvoiceCurrency },
+                    { model: InvoiceItem },
+                ],
+            });
+            const newResponseData = invoices.map(invoice => ({
+                id: invoice.id,
+                invoice_no: invoice.invoiceNo,
+                billFrom: invoice.billFrom,
+                billFromEmail: invoice.billFromEmail,
+                billFromAddress: invoice.billFromAddress,
+                status: invoice.InvoiceStatus.status,
+                current_date: invoice.currentDate,
+                due_date: invoice.dateOfIssue,
+                total: invoice.total,
+                allInfo: {
+                    billFrom: invoice.billFrom,
+                    billFromAddress: invoice.billFromAddress,
+                    billFromEmail: invoice.billFromEmail,
+                    billTo: invoice.billTo,
+                    billToAddress: invoice.billToAddress,
+                    billToEmail: invoice.billToEmail,
+                    invoice_status_id: invoice.InvoiceStatus.id,
+                    status: invoice.InvoiceStatus.status,
+                    invoice_currency_id: invoice.InvoiceStatus.id,
+                    currency: invoice.currency,
+                    currentDate: invoice.currentDate,
+                    dateOfIssue: invoice.dateOfIssue,
+                    discountAmount: invoice.discountAmount,
+                    discountRate: invoice.discountRate,
+                    invoiceNo: invoice.invoiceNo,
+                    notes: invoice.notes,
+                    subTotal: invoice.subTotal,
+                    taxAmount: invoice.taxAmount,
+                    taxRate: invoice.taxRate,
+                    total: invoice.total,
+                    items: invoice.InvoiceItems
+                }
+            }));
+
             res.status(200).json({
+                data: newResponseData,
                 status: 200,
                 message: 'Invoice deleted',
                 url: req.url,
             });
-    
+
         } catch (error) {
             res.status(500).json({
                 status: 500,
                 message: 'Failed to delete Invoice',
                 error: error.message,
-                
+
             });
         }
     },

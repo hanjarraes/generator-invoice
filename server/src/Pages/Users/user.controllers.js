@@ -34,7 +34,7 @@ module.exports = {
 
     show: async (req, res) => {
         const id = req.params.id;
-        const loggedInUser = req.session.userId;
+           const { userId, username } = req.session.userId;
 
         try {
             const userData = await User.findOne({
@@ -62,8 +62,8 @@ module.exports = {
 
             // log
             await UserLog.create({
-                user_id: loggedInUser.id,
-                activity: `Showing data for User ID ${id} by ${loggedInUser.username}`
+                user_id: userId,
+                activity: `Showing data for User ID ${id} by ${username}`
             });
 
             return res.json({
@@ -82,7 +82,7 @@ module.exports = {
 
     store: async (req, res) => {
         const { user_role_id, email, username, password } = req.body;
-        const loggedInUser = req.session.userId;
+           const { userId, usernameID } = req.session.userId;
 
         try {
             const userRoleExists = await UserRole.findByPk(user_role_id);
@@ -114,8 +114,8 @@ module.exports = {
 
             // log
             await UserLog.create({
-                user_id: loggedInUser.id,
-                activity: `Creating new user with username ${username} by ${loggedInUser.username}`
+                user_id: userId,
+                activity: `Creating new user with username ${username} by ${usernameID}`
             });
 
             res.json({
@@ -135,7 +135,7 @@ module.exports = {
 
     update: async (req, res) => {
         const id = req.params.id;
-        const loggedInUser = req.session.userId;
+           const { userId, usernameId } = req.session.userId;
 
         try {
             const userData = await User.findByPk(id);
@@ -185,7 +185,7 @@ module.exports = {
             );
 
             // log
-            await UserLog.create({ user_id: loggedInUser.id, activity: `Updating data for User ID ${id} by ${loggedInUser.username}` });
+            await UserLog.create({ user_id: userId, activity: `Updating data for User ID ${id} by ${usernameId}` });
 
             const updatedUser = await User.findByPk(id);
 
@@ -216,7 +216,7 @@ module.exports = {
 
     delete: async (req, res) => {
         const id = req.params.id;
-        const loggedInUser = req.session.userId;
+           const { userId, username } = req.session.userId;
 
         try {
             const deletedUser = await User.findOne({ where: { id: id } });
@@ -232,7 +232,7 @@ module.exports = {
             await User.destroy({ where: { id: id } });
 
             // log
-            await UserLog.create({ user_id: loggedInUser.id, activity: `Deleting data for User ID ${id} by ${loggedInUser.username}` });
+            await UserLog.create({ user_id: userId, activity: `Deleting data for User ID ${id} by ${username}` });
 
             res.json({
                 data: deletedUser,
