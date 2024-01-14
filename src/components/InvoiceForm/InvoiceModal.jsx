@@ -6,10 +6,13 @@ import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
 import Modal from 'react-bootstrap/Modal';
 import { BiPaperPlane, BiSolidCloudDownload } from "react-icons/bi";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import Logo from '../../logo-Alurnews-02.png'
 import "./style.scss";
-import { postData } from '../../Service';
+import { postData, putData } from '../../Service';
 import { formatDate, formatInvoiceNumber, formatPayload, GenerateInvoice } from './service';
+import { setInvoiceEdit } from '../../store/storeGlobal';
 
 const InvoiceModal = ({
   showModal,
@@ -21,14 +24,33 @@ const InvoiceModal = ({
   subTotal,
   taxAmmount,
   discountAmmount,
-  tableDetail
+  tableDetail,
+  invoiceDetail
 }) => {
   const invoiceNumber = mainState?.invoiceNumber ? formatInvoiceNumber(mainState.invoiceNumber) : mainState.invoiceNo
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+  const invoiceEdit = useSelector((state) => state.global.invoiceEdit);
 
-  const submitInvoice = () => {
+  const submitInvoice = (e) => {
     const payload = formatPayload({ mainState, items })
-    postData({ urlApi: 'invoice', payload })
+    if (invoiceDetail) {
+      putData({
+        dispatch,
+        setData: setInvoiceEdit,
+        urlApi: 'invoice',
+        payload,
+        param: invoiceEdit
+      })
+    } else {
+      postData({
+        urlApi: 'invoice',
+        payload
+      })
+    }
     closeModal()
+    navigate('/data-invoice')
+    e.preventDefault();
   };
 
   return (
@@ -182,7 +204,7 @@ const InvoiceModal = ({
                   </Button>
                 </Col>
                 <Col md={6}>
-                  <Button variant="primary" className="d-block w-100" onClick={() => submitInvoice({ mainState, items })}>
+                  <Button variant="primary" className="d-block w-100" onClick={(e) => submitInvoice(e)}>
                     <BiPaperPlane style={{ width: '15px', height: '15px', marginTop: '-3px' }} className="me-2" />Send Invoice
                   </Button>
                 </Col>

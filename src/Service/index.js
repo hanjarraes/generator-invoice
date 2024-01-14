@@ -39,6 +39,26 @@ export const GetData = async ({ dispatch, setData, urlApi }) => {
     }
 };
 
+export const GetShowData = async ({ dispatch, setData, urlApi, param }) => {
+    try {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/${urlApi}/${param}`);
+        dispatch(setData(response.data));
+    } catch (error) {
+        console.error('Failed to fetch invoices', error);
+    }
+};
+
+
+export const GetDetail = async ({ dispatch, setData, urlApi }) => {
+    try {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/${urlApi}`);
+        dispatch(setData(response.data));
+    } catch (error) {
+        console.error('Failed to fetch invoices', error);
+        throw error;
+    }
+};
+
 export const postData = async ({ urlApi, payload }) => {
     try {
         await axios.post(`${process.env.REACT_APP_API_URL}/${urlApi}`, payload);
@@ -49,11 +69,23 @@ export const postData = async ({ urlApi, payload }) => {
     }
 };
 
+export const putData = async ({ dispatch, setData, urlApi, payload, param }) => {
+    console.log(param , payload)
+    try {
+        await axios.put(`${process.env.REACT_APP_API_URL}/${urlApi}/${param}`, payload);
+        dispatch(setData(null));
+        toast.success('Invoice updated successfully');
+    } catch (error) {
+        console.error(`Failed to post data to ${urlApi}`, error);
+        toast.error('Invoice update failed');
+    }
+};
+
 
 export const deleteData = async ({ dispatch, setData, invoiceId, urlApi }) => {
     try {
         const response = await axios.delete(`/${urlApi}`, {
-            data: { id: invoiceId } 
+            data: { id: invoiceId }
         });
         dispatch(setData(response.data));
         toast.success('Data deleted successfully');

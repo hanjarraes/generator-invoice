@@ -24,6 +24,7 @@ module.exports = {
                     due_date: invoice.dateOfIssue,
                     total: invoice.total,
                     allInfo: {
+                        description: invoice.description,
                         billFrom: invoice.billFrom,
                         billFromAddress: invoice.billFromAddress,
                         billFromEmail: invoice.billFromEmail,
@@ -95,6 +96,7 @@ module.exports = {
                     due_date: invoice.dateOfIssue,
                     total: invoice.total,
                     allInfo: {
+                        description: invoice.description,
                         billFrom: invoice.billFrom,
                         billFromAddress: invoice.billFromAddress,
                         billFromEmail: invoice.billFromEmail,
@@ -176,6 +178,7 @@ module.exports = {
                 return await InvoiceItem.create({
                     invoice_id: newInvoice.id,
                     name: item.name,
+                    description: item.description,
                     price: item.price,
                     quantity: item.quantity,
                 });
@@ -257,6 +260,7 @@ module.exports = {
                     const existingItem = updatedInvoice.InvoiceItems.find(existing => existing.id === item.id);
                     await existingItem.update({
                         name: item.name,
+                        description: item.description,
                         price: item.price,
                         quantity: item.quantity
                     });
@@ -264,13 +268,14 @@ module.exports = {
                     await InvoiceItem.create({
                         invoice_id: updatedInvoice.id,
                         name: item.name,
+                        description: item.description,
                         price: item.price,
                         quantity: item.quantity,
                     });
                 }
             }));
 
-            await UserLog.create({ user_id: userId.id, activity: `Update data for invoice ID ${id} by ${username}` });
+            await UserLog.create({ user_id: userId, activity: `Update data for invoice ID ${id} by ${username}` });
 
             res.status(200).json({
                 data: updatedInvoice,

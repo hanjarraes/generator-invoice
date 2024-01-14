@@ -144,6 +144,7 @@ export const formatPayload = ({ mainState, items }) => {
             items: items.map(item => ({
                 invoice_id: mainState.invoiceNumber,
                 name: item.name,
+                description: item.description,
                 price: item.price,
                 quantity: item.quantity,
             }))
@@ -160,4 +161,20 @@ export const formatDate = (inputDate) => {
 
     return `${day} ${monthAbbreviation} ${year}`;
 };
+export const formatDateForm = (inputDate) => {
+    const date = new Date(inputDate);
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');  // Ingat bahwa bulan dimulai dari 0
+    const day = date.getDate().toString().padStart(2, '0');
+    const year = date.getFullYear();
 
+    return `${month}/${day}/${year}`;
+};
+
+export const formatDateDefult = (inputDate) => {
+    const date = new Date(inputDate);
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');  // Ingat bahwa bulan dimulai dari 0
+    const day = date.getDate().toString().padStart(2, '0');
+    const year = date.getFullYear();
+
+    return `${year}-${month}-${day}`;
+};

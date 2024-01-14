@@ -20,20 +20,20 @@ const TheLayout = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((state) => state.login.user);
-  const [expiredTime, setExpiredTime] = useState(false);
+  // const [expiredTime, setExpiredTime] = useState(false);
 
-  useEffect(() => {
-    let timer = null;
-    const handleMouseMove = () => {
-      if (timer) clearTimeout(timer);
-      timer = setTimeout(() => {
-        setExpiredTime(true);
-        const payload = { last_access: new Date().toLocaleString() };
-        axios.post(`auth/logout`, payload);
-      }, 7500000);
-    };
-    window.addEventListener("mousemove", handleMouseMove);
-  }, []);
+  // useEffect(() => {
+  //   let timer = null;
+  //   const handleMouseMove = () => {
+  //     if (timer) clearTimeout(timer);
+  //     timer = setTimeout(() => {
+  //       setExpiredTime(true);
+  //       const payload = { last_access: new Date().toLocaleString() };
+  //       axios.post(`auth/logout`, payload);
+  //     }, 7500000);
+  //   };
+  //   window.addEventListener("mousemove", handleMouseMove);
+  // }, []);
 
   useEffect(() => {
     if (user) {
@@ -62,7 +62,7 @@ const TheLayout = () => {
     } else {
       navigate("/login");
     }
-  }, [user, expiredTime, navigate]);
+  }, [user, navigate]);
 
   return (
     <Box sx={{ display: "flex" }}>

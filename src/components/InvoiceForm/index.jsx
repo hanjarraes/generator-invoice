@@ -18,10 +18,12 @@ import {
   handleCalculateTotal,
   onCurrencyChange,
   editField,
-  onItemizedItemEdit
+  onItemizedItemEdit,
+  formatDateForm,
+  formatDateDefult
 } from './service';
 
-const InvoiceForm = () => {
+const InvoiceForm = ({ invoiceDetail }) => {
   const dispatch = useDispatch();
   const currencyData = useSelector((state) => state.global.currencyData);
   const [mainState, setMainState] = useState({
@@ -78,8 +80,67 @@ const InvoiceForm = () => {
   }, [dispatch]);
 
   useEffect(() => {
+    if (invoiceDetail) {
+      const dataDetail = invoiceDetail.data.allInfo
+      const dataItem = invoiceDetail.data.allInfo.items
+      const newData = { ...mainState }
+
+      const invoiceNumberPart = dataDetail.invoiceNo.split('/')[0];
+      const newInvoiceNumber = parseInt(invoiceNumberPart, 10);
+
+      newData.invoice_currency_id = dataDetail.invoice_currency_id
+      newData.currency = dataDetail.currency
+      newData.currentDate = dataDetail.currentDate
+      newData.invoiceNumber = newInvoiceNumber
+      newData.dateOfIssue = dataDetail.dateOfIssue
+      newData.invoice_status_id = dataDetail.invoice_status_id
+      newData.status = dataDetail.status
+      newData.billTo = dataDetail.billTo
+      newData.billToEmail = dataDetail.billToEmail
+      newData.billToAddress = dataDetail.billToAddress
+      newData.billFrom = dataDetail.billFrom
+      newData.billFromEmail = dataDetail.billFromEmail
+      newData.billFromAddress = dataDetail.billFromAddress
+      newData.notes = dataDetail.notes
+      newData.total = dataDetail.total
+      newData.subTotal = dataDetail.subTotal
+      newData.taxRate = dataDetail.taxRate
+      newData.taxAmount = dataDetail.taxAmount
+      newData.discountRate = dataDetail.discountRate
+      newData.discountAmount = dataDetail.discountAmount
+      setMainState(newData)
+
+      const newItem = []
+      dataItem?.forEach((data, idx) => {
+        const dataItem = {
+          id: idx + 1,
+          name: data.name,
+          description: data.description,
+          price: data.price,
+          quantity: data.quantity
+        }
+        newItem.push(dataItem)
+      })
+
+      setItems(newItem)
+    }
+  }, []);
+
+  useEffect(() => {
     handleCalculateTotal({ mainState, setMainState, items });
   }, [items, mainState.taxRate, mainState.discountRate]);
+
+  // validasi getDetail untuk currency
+  const selectedCurrency = mainState.currency;
+  const matchingCurrency = currencyData.data.filter(data => data.currency === selectedCurrency);
+  const nonMatchingCurrency = currencyData.data.filter(data => data.currency !== selectedCurrency);
+  const finalDataCurrency = matchingCurrency.concat(nonMatchingCurrency);
+
+  // Get dateOfIssue Detail
+  const dateOfIssueData = formatDateDefult(invoiceDetail.data.allInfo.dateOfIssue)
+
+  console.log(dateOfIssueData)
+
 
   return (
     <>
@@ -92,18 +153,19 @@ const InvoiceForm = () => {
                   <Row className='align-items-center'>
                     <Col sm={12} md={6} className='mb-3'>
                       <span className="fw-bold">Current&nbsp;Date:&nbsp;</span>
-                      <span className="current-date">{new Date().toLocaleDateString()}</span>
+                      <span className="current-date">{invoiceDetail ? formatDateForm(mainState.currentDate) : new Date().toLocaleDateString()}</span>
                     </Col>
                     <Col sm={12} md={6} className="d-flex align-items-center mb-3">
                       <span className="fw-bold d-block me-2">Due&nbsp;Date:</span>
                       <Form.Control
                         className="form-control-invoice"
                         type="date"
-                        value={mainState.dateOfIssue}
+                        defaultValue={invoiceDetail ? dateOfIssueData : new Date().toISOString().slice(0, 10)}
                         name={"dateOfIssue"}
                         onChange={(event) => editField({ event, setMainState, mainState, items })}
                         style={{ maxWidth: '150px' }}
-                        required="required" />
+                        required="required"
+                      />
                     </Col>
                   </Row>
                 </Col>
@@ -233,26 +295,39 @@ const InvoiceForm = () => {
                 <Col md={4}>
                   <Form.Group className="mb-3">
                     <Form.Select
-                      onChange={event => onCurrencyChange(({ event, setMainState }))}
+                      onChange={event => onCurrencyChange({ event, setMainState })}
                       className="btn btn-light my-1"
                       aria-label="Change Currency"
                     >
-                      {currencyData.data.map((data, idx) => {
+                      {finalDataCurrency.map((data, idx) => {
                         const newDataString = JSON.stringify({
                           id: data.id,
                           currency: data.currency
                         });
-                        return (
-                          <option
-                            key={`currency-${data.currency}-${idx}`}
-                            value={newDataString}
-                          >
-                            {data.currency} ({data.description})
-                          </option>
-                        )
+                        if (invoiceDetail) {
+                          return (
+                            <option
+                              key={`currency-${data.currency}-${idx}`}
+                              value={newDataString}
+                            >
+                              {data.currency} ({data.description})
+                            </option>
+                          );
+                        } else {
+                          return (
+                            <option
+                              key={`currency-${data.currency}-${idx}`}
+                              value={newDataString}
+                            >
+                              {data.currency} ({data.description})
+                            </option>
+                          );
+                        }
+
                       })}
                     </Form.Select>
                   </Form.Group>
+
                 </Col>
               </Row>
 
@@ -317,6 +392,7 @@ const InvoiceForm = () => {
           </Col>
         </Row>
         <InvoiceModal
+          invoiceDetail={invoiceDetail}
           showModal={mainState.isOpen}
           closeModal={closeModal}
           mainState={mainState}

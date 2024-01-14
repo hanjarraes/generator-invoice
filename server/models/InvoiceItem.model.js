@@ -13,6 +13,7 @@ module.exports = (sequelize) => {
       allowNull: false,
     },
     name: DataTypes.STRING,
+    description: DataTypes.STRING,
     price: DataTypes.INTEGER,
     quantity: DataTypes.INTEGER,
     created_at: {
@@ -29,7 +30,7 @@ module.exports = (sequelize) => {
     sequelize,
     modelName: 'InvoiceItem',
     tableName: 'tb_invoice_items',
-    timestamps: false, 
+    timestamps: false,
   });
 
   return InvoiceItem;

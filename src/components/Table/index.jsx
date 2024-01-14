@@ -3,16 +3,17 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Dialog from '@mui/material/Dialog';
 import Slide from '@mui/material/Slide';
-import * as XLSX from "xlsx";
 import "./style.scss";
 import InvoiceModal from "../InvoiceForm/InvoiceModal";
 import { formatDate } from "./service";
+import * as XLSX from "xlsx";
+
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const Table = ({ columns, data, deleteItem }) => {
+const Table = ({ columns, data, deleteItem, showEdit }) => {
   const [sortColumn, setSortColumn] = useState(null);
   const [sortDirection, setSortDirection] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -166,10 +167,9 @@ const Table = ({ columns, data, deleteItem }) => {
                     );
                   }
                   if (column.accessor === "current_date" || column.accessor === "due_date") {
-                    console.log(formatDate(item[column.accessor]))
                     return (
                       <td onClick={() => openModal(item.allInfo)} key={`${column.accessor}-${index}`}>
-                        {item[column.accessor]}
+                        {formatDate(item[column.accessor])}
                       </td>
                     );
                   }
@@ -181,7 +181,7 @@ const Table = ({ columns, data, deleteItem }) => {
                 })}
                 <td>
                   <div>
-                    <EditIcon className="edit-icon" />
+                    <EditIcon onClick={() => showEdit(item.id)} className="edit-icon" />
                     <DeleteIcon onClick={() => handleDelete(item.id)} className="delete-icon" />
                   </div>
                 </td>
