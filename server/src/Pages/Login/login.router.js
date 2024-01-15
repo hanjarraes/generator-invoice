@@ -24,7 +24,7 @@ router.post("/login", async (req, res) => {
         const token = jwt.sign(
             { id: user.id, username: user.username },
             process.env.MY_SECRET,
-            { expiresIn: "1h" }
+            { expiresIn: "24h" }
         );
         const userRole = await UserRole.findByPk(user.user_role_id);
         const roleModules = await RoleModule.findAll({ where: { users_role_id: userRole.id } });

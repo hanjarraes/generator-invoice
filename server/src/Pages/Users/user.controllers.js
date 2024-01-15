@@ -1,17 +1,32 @@
 const bcrypt = require('bcrypt');
 const db = require('../../../models');
-const { User, UserLog, UserRole } = db;
+const { User, UserLog, UserRole, RoleModule } = db;
 const saltRounds = 10;
 
 module.exports = {
     index: async (req, res) => {
         try {
             const usersData = await User.findAll({
-                include: UserRole,
+                include: [
+                    {
+                        model: UserRole,
+                        include: RoleModule
+                    }
+                ]
             });
-            if (usersData.length > 0) {
+
+            if (usersData) {
+                const newResponseData = usersData.map(dataUser => ({
+                    id: dataUser.id,
+                    email: dataUser.email,
+                    username: dataUser.username,
+                    role: dataUser.UserRole.role,
+                    description: dataUser.UserRole.description,
+                    allInfo: dataUser,
+                }));
+
                 res.json({
-                    data: usersData,
+                    data: newResponseData,
                     status: 200,
                     message: 'Data Found',
                     url: req.url,
@@ -32,14 +47,20 @@ module.exports = {
         }
     },
 
+
     show: async (req, res) => {
         const id = req.params.id;
-           const { userId, username } = req.session;
+        const { userId, username } = req.session;
 
         try {
             const userData = await User.findOne({
                 where: { id: id },
-                include: UserRole
+                include: [
+                    {
+                        model: UserRole,
+                        include: RoleModule
+                    }
+                ]
             });
 
             if (!userData) {
@@ -50,28 +71,35 @@ module.exports = {
                 });
             }
 
-            const userRole = userData.UserRole;
-            const newData = {
-                id: userData.id,
-                role: userRole.role,
-                description: userRole.description,
-                status: userData.status,
-                email: userData.email,
-                username: userData.username
+            if (userData) {
+                const newResponseData = {
+                    id: userData.id,
+                    email: userData.email,
+                    username: userData.username,
+                    role: userData.UserRole.role,
+                    description: userData.UserRole.description,
+                    allInfo: userData,
+                };
+
+                // log
+                await UserLog.create({
+                    user_id: userId,
+                    activity: `Showing data for User ID ${id} by ${username}`
+                });
+
+                res.json({
+                    data: newResponseData,
+                    status: 200,
+                    message: 'Data Found',
+                    url: req.url,
+                });
+            } else {
+                res.json({
+                    status: 404,
+                    message: 'Data Not Found',
+                    url: req.url,
+                });
             }
-
-            // log
-            await UserLog.create({
-                user_id: userId,
-                activity: `Showing data for User ID ${id} by ${username}`
-            });
-
-            return res.json({
-                data: newData,
-                status: 200,
-                message: 'Data found successfully',
-                url: req.url,
-            });
         } catch (error) {
             return res.status(500).json({
                 message: 'Failed to fetch data',
@@ -82,7 +110,7 @@ module.exports = {
 
     store: async (req, res) => {
         const { user_role_id, email, username, password } = req.body;
-           const { userId, usernameID } = req.session;
+        const { userId, usernameID } = req.session;
 
         try {
             const userRoleExists = await UserRole.findByPk(user_role_id);
@@ -135,7 +163,7 @@ module.exports = {
 
     update: async (req, res) => {
         const id = req.params.id;
-           const { userId, usernameId } = req.session;
+        const { userId, usernameId } = req.session;
 
         try {
             const userData = await User.findByPk(id);
@@ -215,9 +243,8 @@ module.exports = {
 
 
     delete: async (req, res) => {
-        const id = req.params.id;
-           const { userId, username } = req.session;
-
+        const { userId, username } = req.session;
+        const { id } = req.body;
         try {
             const deletedUser = await User.findOne({ where: { id: id } });
 
@@ -234,8 +261,26 @@ module.exports = {
             // log
             await UserLog.create({ user_id: userId, activity: `Deleting data for User ID ${id} by ${username}` });
 
+            const usersData = await User.findAll({
+                include: [
+                    {
+                        model: UserRole,
+                        include: RoleModule
+                    }
+                ]
+            });
+
+            const newResponseData = usersData.map(dataUser => ({
+                id: dataUser.id,
+                email: dataUser.email,
+                username: dataUser.username,
+                role: dataUser.UserRole.role,
+                description: dataUser.UserRole.description,
+                allInfo: dataUser,
+            }));
+
             res.json({
-                data: deletedUser,
+                data: newResponseData,
                 status: true,
                 message: 'Data successfully deleted',
                 url: req.url,

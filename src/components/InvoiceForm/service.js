@@ -83,7 +83,7 @@ export const formatInvoiceNumber = (value) => {
     const currentYear = new Date().getFullYear();
     const currentMonthRoman = getRomanMonth(new Date().getMonth() + 1);
 
-    return `${formattedInvoiceNumber}/AN/${currentMonthRoman}/${currentYear}`
+    return `${formattedInvoiceNumber}/AN/${currentMonthRoman}/ALIV/${currentYear}`
 }
 
 export const editField = ({ event, setMainState, mainState, items }) => {

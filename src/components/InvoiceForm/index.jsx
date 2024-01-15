@@ -137,10 +137,7 @@ const InvoiceForm = ({ invoiceDetail }) => {
   const finalDataCurrency = matchingCurrency.concat(nonMatchingCurrency);
 
   // Get dateOfIssue Detail
-  const dateOfIssueData = formatDateDefult(invoiceDetail.data.allInfo.dateOfIssue)
-
-  console.log(dateOfIssueData)
-
+  const dateOfIssueData = formatDateDefult(invoiceDetail?.data.allInfo.dateOfIssue)
 
   return (
     <>

@@ -7,10 +7,10 @@ const invoiceController = require('./invoice.controllers')
 
 router.route('/invoice')
     .get(cookieJwtAuth, invoiceController.index)
-    .post(cookieJwtAuth, invoiceController.store);
+    .post(cookieJwtAuth, invoiceController.store)
+    .delete(cookieJwtAuth, invoiceController.delete);
 
 router.get('/invoice/:id/', cookieJwtAuth, invoiceController.show);
 router.put('/invoice/:id/', cookieJwtAuth, invoiceController.update);
-router.delete('/invoice', cookieJwtAuth, invoiceController.delete);
 
 module.exports = router;

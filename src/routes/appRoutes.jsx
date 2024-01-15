@@ -4,6 +4,7 @@ import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import CollectionsBookmarkIcon from '@mui/icons-material/CollectionsBookmark';
 import Dashboard from "../pages/Dashboard"
 import Invoice from "../pages/Invoice";
+import UserManagement from "../pages/UserManagement";
 
 
 const appRoutes = [
@@ -27,7 +28,7 @@ const appRoutes = [
   },
   {
     path: "/userManagement",
-    element: <Dashboard />,
+    element: <UserManagement />,
     state: "userManagement",
     sidebarProps: {
       displayText: "User Management",

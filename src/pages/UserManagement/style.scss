@@ -1,0 +1,46 @@
+.modal-create-user {
+    padding: 0px 5px 15px 15px;
+
+    .ri-close-line {
+        font-size: 28px;
+    }
+
+    .from-title {
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    .footer-btn {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 15px;
+
+        .btn-submit {
+            background-color: #bf0000b7;
+            color: #fff;
+            height: 38px;
+            border: 1px solid;
+            box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px,
+                rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+
+            &:hover {
+                background-color: #fff;
+                color: #bf0000b7;
+                border: 1px solid #bf0000b7;
+            }
+        }
+
+        .btn-cancel {
+            background-color: #534e4e;
+            color: #fff;
+            height: 38px;
+            border: 1px solid #000;
+
+            &:hover {
+                background-color: #fff;
+                color: #534e4e;
+                border: 1px solid #534e4e;
+            }
+        }
+    }
+}

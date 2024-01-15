@@ -13,6 +13,16 @@ const globalSlice = createSlice({
     setAppState: (state, action) => {
       state.appState = action.payload;
     },
+
+    //UserManagent
+    setUserData: (state, action) => {
+      state.userData = action.payload;
+    },
+    setRoleData: (state, action) => {
+      state.roleData = action.payload;
+    },
+
+    // invoice
     setInvoiceData: (state, action) => {
       state.invoiceData = action.payload;
     },
@@ -30,6 +40,8 @@ const globalSlice = createSlice({
 
 export const {
   setAppState,
+  setUserData,
+  setRoleData,
   setInvoiceData,
   setInvoiceEdit,
   setInvoiceDetail,

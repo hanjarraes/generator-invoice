@@ -8,6 +8,7 @@ import colorConfigs from "../../configs/colorConfigs";
 import sizeConfigs from "../../configs/sizeConfigs";
 import Sidebar from "../common/Sidebar";
 import Modal from "../../components/Modal";
+import { toast } from 'react-toastify';
 import { logoutUser } from "../../Service";
 import { setUser } from "../../store/storeLogin";
 
@@ -35,27 +36,27 @@ const TheLayout = () => {
   //   window.addEventListener("mousemove", handleMouseMove);
   // }, []);
 
-  useEffect(() => {
-    if (user) {
-      axios.defaults.baseURL = process.env.REACT_APP_API_URL;
-      axios.defaults.paramsSerializer = { indexes: null };
-      axios.defaults.headers.common["Content-Type"] = "application/json";
-      axios.defaults.headers.common.Accept = "application/json";
-      axios.defaults.headers.common.Authorization = `Bearer ${user.token}`;
-      axios.defaults.timeout = 500000;
-      axios.interceptors.request.use((request) => request);
-  
-      axios.interceptors.response.use(
-        (response) => response,
-        (error) => {
-          if (error?.response?.status === 403) {
-            logoutUser({ dispatch, setData: setUser, navigate })
-          }
-          return Promise.reject(error);
+  if (user) {
+    axios.defaults.baseURL = process.env.REACT_APP_API_URL;
+    axios.defaults.paramsSerializer = { indexes: null };
+    axios.defaults.headers.common["Content-Type"] = "application/json";
+    axios.defaults.headers.common.Accept = "application/json";
+    axios.defaults.headers.common.Authorization = `Bearer ${user.token}`;
+    axios.defaults.timeout = 500000;
+    axios.interceptors.request.use((request) => request);
+
+    axios.interceptors.response.use(
+      (response) => response,
+      (error) => {
+        if (error?.response?.status === 403) {
+          dispatch(setUser(null));
+          toast.error('sorry session expired 😥');
+          navigate('/login')
         }
-      );
-    }
-  }, [dispatch, navigate, user]);
+        return Promise.reject(error);
+      }
+    );
+  }
   
   useEffect(() => {
     if (user) {

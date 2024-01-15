@@ -46,7 +46,7 @@ const Table = ({ columns, data, deleteItem, showEdit }) => {
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredData?.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = filteredData ? filteredData?.slice(indexOfFirstItem, indexOfLastItem) : ''
 
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -280,7 +280,7 @@ const Table = ({ columns, data, deleteItem, showEdit }) => {
         aria-describedby="alert-dialog-slide-description"
       >
         <div className="modal-delete">
-          <div className="d-flex justify-content-end">
+          <div className="d-flex justify-content-end" onClick={() => setisOpenDelete(false)}>
             <i className="ri-close-line" />
           </div>
           <div className="content">

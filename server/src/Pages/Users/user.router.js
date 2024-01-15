@@ -7,7 +7,8 @@ const userController = require('./user.controllers')
 
 router.route('/user')
     .get(cookieJwtAuth, userController.index)
-    .post(cookieJwtAuth, userController.store);
+    .post(cookieJwtAuth, userController.store)
+    .delete(cookieJwtAuth, userController.delete);
 
 router.get('/user/:id/', cookieJwtAuth, userController.show);
 router.put('/user/:id/', cookieJwtAuth, userController.update);

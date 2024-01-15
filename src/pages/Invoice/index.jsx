@@ -53,8 +53,8 @@ const Invoice = () => {
     GetData({ dispatch, setData: setInvoiceData, urlApi: 'invoice' })
   }, [dispatch]);
 
-  const deleteItem = (invoiceId) => {
-    deleteData({ dispatch, setData: setInvoiceData, invoiceId, urlApi: 'invoice' })
+  const deleteItem = (Id) => {
+    deleteData({ dispatch, setData: setInvoiceData, Id, urlApi: 'invoice' })
   }
 
   const showEdit = async (value) => {
