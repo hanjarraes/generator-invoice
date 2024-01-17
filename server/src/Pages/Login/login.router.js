@@ -39,6 +39,7 @@ router.post("/login", async (req, res) => {
         res.json({
             data: {
                 email: user.email,
+                name: user.name,
                 username: user.username,
                 role: userRole.role,
                 modules: modules,

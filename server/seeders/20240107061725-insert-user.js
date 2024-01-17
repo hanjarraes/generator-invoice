@@ -7,6 +7,7 @@ module.exports = {
       {
         user_role_id: 1, 
         email: 'hanjarraess@gmail.com',
+        name: 'Muhammad Hanjarraes',
         username: 'hanjarraes',
         password: hashedPassword,
         status: 'active',
@@ -16,6 +17,7 @@ module.exports = {
       {
         user_role_id: 2, 
         email: 'vg4615156@gmail.com',
+        name: 'hanjarraes',
         username: 'admin',
         status: 'active',
         password: hashedPassword,

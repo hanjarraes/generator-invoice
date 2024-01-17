@@ -113,9 +113,9 @@ export const onItemizedItemEdit = ({ evt, mainState, setMainState, items, setIte
 export const formatPayload = ({ mainState, items }) => {
     const payload = {
         invoice_no: formatInvoiceNumber(mainState.invoiceNumber),
-        billFrom: mainState.billFrom,
-        billFromEmail: mainState.billFromEmail,
-        billFromAddress: mainState.billFrom,
+        billTo: mainState.billTo,
+        billToAddress: mainState.billToAddress,
+        billToEmail: mainState.billToEmail,
         status: mainState.status,
         current_date: mainState.currentDate,
         due_date: mainState.dateOfIssue,

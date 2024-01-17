@@ -20,6 +20,7 @@ module.exports = {
                     id: dataUser.id,
                     email: dataUser.email,
                     username: dataUser.username,
+                    name: dataUser.name,
                     role: dataUser.UserRole.role,
                     description: dataUser.UserRole.description,
                     allInfo: dataUser,
@@ -76,6 +77,7 @@ module.exports = {
                     id: userData.id,
                     email: userData.email,
                     username: userData.username,
+                    name: userData.name,
                     role: userData.UserRole.role,
                     description: userData.UserRole.description,
                     allInfo: userData,
@@ -109,7 +111,7 @@ module.exports = {
     },
 
     store: async (req, res) => {
-        const { user_role_id, email, username, password } = req.body;
+        const { user_role_id, email, username, password, name } = req.body;
         const { userId, usernameID } = req.session;
 
         try {
@@ -136,6 +138,7 @@ module.exports = {
             const user = await User.create({
                 user_role_id: user_role_id,
                 email: email,
+                name: name,
                 username: username,
                 password: hashedPassword,
             });
@@ -180,6 +183,7 @@ module.exports = {
                 email,
                 username,
                 password,
+                name,
                 user_role_id,
                 status
             } = req.body;
@@ -208,7 +212,14 @@ module.exports = {
             const hashedPassword = await bcrypt.hash(password, saltRounds);
 
             await User.update(
-                { user_role_id: user_role_id, email: email, username: username, password: hashedPassword, status: status },
+                { 
+                    user_role_id: user_role_id, 
+                    email: email,
+                    name:name, 
+                    username: username, 
+                    password: hashedPassword, 
+                    status: status 
+                },
                 { where: { id: id } }
             );
 
@@ -221,6 +232,7 @@ module.exports = {
                 id: updatedUser.id,
                 user_role_id: updatedUser.user_role_id,
                 email: updatedUser.email,
+                name: updatedUser.name,
                 username: updatedUser.username,
                 created_at: updatedUser.created_at,
                 updated_at: updatedUser.updated_at

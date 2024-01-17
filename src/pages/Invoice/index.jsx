@@ -18,16 +18,16 @@ const Invoice = () => {
         accessor: "invoice_no",
       },
       {
-        Header: "Bill From",
-        accessor: "billFrom",
+        Header: "Bill To",
+        accessor: "billTo",
       },
       {
         Header: "Email",
-        accessor: "billFromEmail",
+        accessor: "billToEmail",
       },
       {
         Header: "Address",
-        accessor: "billFromAddress",
+        accessor: "billToAddress",
       },
       {
         Header: "Status",
@@ -88,6 +88,7 @@ const Invoice = () => {
         columns={columns}
         data={invoiceData.data}
         deleteItem={deleteItem}
+        showInvoice
       />
     </>
   );

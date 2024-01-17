@@ -13,7 +13,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const Table = ({ columns, data, deleteItem, showEdit }) => {
+const Table = ({ columns, data, deleteItem, showEdit, showInvoice }) => {
   const [sortColumn, setSortColumn] = useState(null);
   const [sortDirection, setSortDirection] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -259,18 +259,20 @@ const Table = ({ columns, data, deleteItem, showEdit }) => {
           </button>
         </div>
       </div>
-      {showDetail &&
-        <InvoiceModal
-          tableDetail
-          showModal={isOpen}
-          closeModal={closeModal}
-          mainState={showDetail}
-          items={showDetail.items}
-          currency={showDetail.currency}
-          subTotal={showDetail.subTotal}
-          taxAmmount={showDetail.taxAmount}
-          discountAmmount={showDetail.discountAmount}
-          total={showDetail.total} />
+      {showDetail && showInvoice &&
+        (
+          <InvoiceModal
+            tableDetail
+            showModal={isOpen}
+            closeModal={closeModal}
+            mainState={showDetail}
+            items={showDetail.items}
+            currency={showDetail.currency}
+            subTotal={showDetail.subTotal}
+            taxAmmount={showDetail.taxAmount}
+            discountAmmount={showDetail.discountAmount}
+            total={showDetail.total} />
+        )
       }
       <Dialog
         open={isOpenDelete}

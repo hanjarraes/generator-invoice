@@ -131,14 +131,13 @@ const InvoiceModal = ({
                   <span>SUBTOTAL</span>
                   <div className='item-total'>{currency} {subTotal}</div>
                 </div>
-                {taxAmmount !== '0.00' && taxAmmount !== '0' && (
+                {taxAmmount !== '0.00' && taxAmmount !== '0' && taxAmmount !== '' && (
                   <div className='modal-text-item'>
                     <span>TAX</span>
                     <div className='item-total'>{currency} {taxAmmount}</div>
                   </div>
                 )}
-
-                {discountAmmount !== '0.00' && discountAmmount !== '0' && (
+                {discountAmmount !== '0.00' && discountAmmount !== '0' && discountAmmount !== '' && (
                   <div className='modal-text-item'>
                     <span>DISCOUNT</span>
                     <div className='item-total'>{currency} {discountAmmount}</div>

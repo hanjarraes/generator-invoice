@@ -26,6 +26,8 @@ import {
 const InvoiceForm = ({ invoiceDetail }) => {
   const dispatch = useDispatch();
   const currencyData = useSelector((state) => state.global.currencyData);
+  const user = useSelector((state) => state.login.user);
+  const [currencyItem, setCurrencyItem] = useState([])
   const [mainState, setMainState] = useState({
     isOpen: false,
     invoice_currency_id: 1,
@@ -40,9 +42,9 @@ const InvoiceForm = ({ invoiceDetail }) => {
     billTo: '',
     billToEmail: '',
     billToAddress: '',
-    billFrom: '',
-    billFromEmail: '',
-    billFromAddress: '',
+    billFrom: user.data.name,
+    billFromEmail: user.data.email,
+    billFromAddress: 'Mega Legenda 2-D2-01.Batam Kota Kepri',
     notes: 'Thanks for your business!',
     total: '0',
     subTotal: '0',
@@ -51,6 +53,7 @@ const InvoiceForm = ({ invoiceDetail }) => {
     discountRate: '',
     discountAmount: '0'
   });
+
   const [items, setItems] = useState([
     {
       id: 1,
@@ -79,7 +82,7 @@ const InvoiceForm = ({ invoiceDetail }) => {
     GetData({ dispatch, setData: setCurrency, urlApi: 'currency' })
   }, [dispatch]);
 
-  useEffect(() => {
+  useEffect( () => {
     if (invoiceDetail) {
       const dataDetail = invoiceDetail.data.allInfo
       const dataItem = invoiceDetail.data.allInfo.items
@@ -124,17 +127,45 @@ const InvoiceForm = ({ invoiceDetail }) => {
 
       setItems(newItem)
     }
+
+  }, []);
+
+  useEffect(() => {
+    if (currencyData?.data) {
+      if (invoiceDetail) {
+        if (mainState.currency) {
+          const defultCurrencySelect = mainState.currency;
+          const currencyDataArray = currencyData?.data;
+          const defaultCurrencyIndex = currencyDataArray.findIndex(
+            data => data.currency === defultCurrencySelect
+          );
+          if (defaultCurrencyIndex !== -1) {
+            const sortedCurrencyArray = [
+              currencyDataArray[defaultCurrencyIndex],
+              ...currencyDataArray.slice(0, defaultCurrencyIndex),
+              ...currencyDataArray.slice(defaultCurrencyIndex + 1)
+            ];
+  
+            setCurrencyItem(sortedCurrencyArray);
+          } else {
+            setCurrencyItem(currencyDataArray);
+          }
+        } else {
+          setCurrencyItem(currencyData?.data);
+        }
+      } else {
+        setCurrencyItem(currencyData?.data);
+      }
+    }
   }, []);
 
   useEffect(() => {
     handleCalculateTotal({ mainState, setMainState, items });
   }, [items, mainState.taxRate, mainState.discountRate]);
 
-  // validasi getDetail untuk currency
-  const selectedCurrency = mainState.currency;
-  const matchingCurrency = currencyData.data.filter(data => data.currency === selectedCurrency);
-  const nonMatchingCurrency = currencyData.data.filter(data => data.currency !== selectedCurrency);
-  const finalDataCurrency = matchingCurrency.concat(nonMatchingCurrency);
+  useEffect(() => {
+  }, []);
+
 
   // Get dateOfIssue Detail
   const dateOfIssueData = formatDateDefult(invoiceDetail?.data.allInfo.dateOfIssue)
@@ -200,7 +231,6 @@ const InvoiceForm = ({ invoiceDetail }) => {
                     name="billToEmail"
                     onChange={(event) => editField({ event, setMainState, mainState, items })}
                     autoComplete="email"
-                    required
                   />
                   <Form.Control
                     className="form-control-invoice my-2"
@@ -234,7 +264,6 @@ const InvoiceForm = ({ invoiceDetail }) => {
                     name="billFromEmail"
                     onChange={(event) => editField({ event, setMainState, mainState, items })}
                     autoComplete="email"
-                    required
                   />
                   <Form.Control
                     className="form-control-invoice my-2"
@@ -296,7 +325,7 @@ const InvoiceForm = ({ invoiceDetail }) => {
                       className="btn btn-light my-1"
                       aria-label="Change Currency"
                     >
-                      {finalDataCurrency.map((data, idx) => {
+                      {currencyItem.map((data, idx) => {
                         const newDataString = JSON.stringify({
                           id: data.id,
                           currency: data.currency

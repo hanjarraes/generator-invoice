@@ -10,15 +10,16 @@ module.exports = {
                     { model: InvoiceCurrency },
                     { model: InvoiceItem },
                 ],
+                order: [['currentDate', 'DESC']],
             });
-
-            if (invoices) {
+    
+            if (invoices && invoices.length > 0) {
                 const newResponseData = invoices.map(invoice => ({
                     id: invoice.id,
                     invoice_no: invoice.invoiceNo,
-                    billFrom: invoice.billFrom,
-                    billFromEmail: invoice.billFromEmail,
-                    billFromAddress: invoice.billFromAddress,
+                    billTo: invoice.billTo,
+                    billToAddress: invoice.billToAddress,
+                    billToEmail: invoice.billToEmail,
                     status: invoice.InvoiceStatus.status,
                     current_date: invoice.currentDate,
                     due_date: invoice.dateOfIssue,
@@ -48,7 +49,7 @@ module.exports = {
                         items: invoice.InvoiceItems
                     }
                 }));
-
+    
                 res.json({
                     data: newResponseData,
                     status: 200,
@@ -69,7 +70,8 @@ module.exports = {
                 error: error.message,
             });
         }
-    },
+    }
+    ,
 
     show: async (req, res) => {
         const { userId, username } = req.session;
@@ -88,9 +90,9 @@ module.exports = {
                 const responseData = {
                     id: invoice.id,
                     invoice_no: invoice.invoiceNo,
-                    billFrom: invoice.billFrom,
-                    billFromEmail: invoice.billFromEmail,
-                    billFromAddress: invoice.billFromAddress,
+                    billTo: invoice.billTo,
+                    billToAddress: invoice.billToAddress,
+                    billToEmail: invoice.billToEmail,
                     status: invoice.InvoiceStatus.status,
                     current_date: invoice.currentDate,
                     due_date: invoice.dateOfIssue,
@@ -326,9 +328,9 @@ module.exports = {
             const newResponseData = invoices.map(invoice => ({
                 id: invoice.id,
                 invoice_no: invoice.invoiceNo,
-                billFrom: invoice.billFrom,
-                billFromEmail: invoice.billFromEmail,
-                billFromAddress: invoice.billFromAddress,
+                billTo: invoice.billTo,
+                billToAddress: invoice.billToAddress,
+                billToEmail: invoice.billToEmail,
                 status: invoice.InvoiceStatus.status,
                 current_date: invoice.currentDate,
                 due_date: invoice.dateOfIssue,

@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useMemo } from "react";
 import Table from "../../components/Table";
 import { useDispatch, useSelector } from "react-redux";
-import { setRoleData, setUserData } from "../../store/storeGlobal";
+import { setRoleData, setUserData, setUserDetail, setUserEdit } from "../../store/storeGlobal";
 import "./style.scss";
-import { GetData, deleteData } from "../../Service";
+import { GetData, GetShowData, deleteData } from "../../Service";
 import ModalCreate from "./ModalCreate";
 
 const UserManagement = () => {
@@ -25,6 +25,10 @@ const UserManagement = () => {
             {
                 Header: "Username",
                 accessor: "username",
+            },
+            {
+                Header: "Name",
+                accessor: "name",
             },
             {
                 Header: "Role",
@@ -80,13 +84,22 @@ const UserManagement = () => {
         })
     }
 
-    const showEdit = async () => {
-        setIsOpen(false)
+    const showEdit = async (value) => {
+        await dispatch(setUserEdit(value));
+        await GetShowData({
+            dispatch,
+            setData: setUserDetail,
+            urlApi: 'user',
+            param: value
+        })
+        setIsOpen(true)
     }
 
     const showCreate = async () => {
+        dispatch(setUserDetail(null));
         setIsOpen(true)
     }
+
 
     return (
         <>
@@ -105,10 +118,13 @@ const UserManagement = () => {
                     <div className="d-flex justify-content-between align-items-center">
                         <div className="title-module">Data User</div>
                     </div>
-                    <ModalCreate
-                        isOpen={isOpen}
-                        setIsOpen={setIsOpen}
-                    />
+                    {isOpen && (
+                        <ModalCreate
+                            isOpen={isOpen}
+                            setIsOpen={setIsOpen}
+                        />
+                    )}
+
                     <Table
                         showEdit={showEdit}
                         columns={columnsUser}
@@ -120,10 +136,10 @@ const UserManagement = () => {
                     <div className="d-flex justify-content-between align-items-center">
                         <div className="title-module">Data Role</div>
                     </div>
-                    <ModalCreate
+                    {/* <ModalCreate
                         isOpen={isOpen}
                         setIsOpen={setIsOpen}
-                    />
+                    /> */}
                     <Table
                         showEdit={showEdit}
                         columns={columnsRole}

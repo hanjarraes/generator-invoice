@@ -19,9 +19,8 @@ const Dashboard = () => {
   }
 
   useEffect(() => {
-    GetData({ dispatch, setData: setInvoiceData, urlApi:'invoice' })
+    GetData({ dispatch, setData: setInvoiceData, urlApi: 'invoice' })
   }, [dispatch]);
-
 
   return (
     <div className="container">
@@ -34,7 +33,7 @@ const Dashboard = () => {
               </div>
               <div style={{ padding: '0px 10px', width: '180px' }}>
                 <div>{item.invoice_no}</div>
-                <div>{item.billFrom}</div>
+                <div>{item.billTo}</div>
                 <div>{item.allInfo.currency + '. ' + item.total}</div>
               </div>
             </div>
@@ -43,6 +42,7 @@ const Dashboard = () => {
       </div>
       {showDetail &&
         <InvoiceModal
+          showInvoice
           tableDetail
           showModal={isOpen}
           closeModal={closeModal}
