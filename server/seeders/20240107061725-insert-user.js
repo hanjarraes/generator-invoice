@@ -16,9 +16,19 @@ module.exports = {
       },
       {
         user_role_id: 2, 
-        email: 'vg4615156@gmail.com',
-        name: 'hanjarraes',
+        email: 'admin@gmail.com',
+        name: 'admin',
         username: 'admin',
+        status: 'active',
+        password: hashedPassword,
+        created_at: new Date(),
+        updated_at: new Date()
+      },
+      {
+        user_role_id: 2, 
+        email: 'user@gmail.com',
+        name: 'user',
+        username: 'user',
         status: 'active',
         password: hashedPassword,
         created_at: new Date(),

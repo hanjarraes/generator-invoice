@@ -1,16 +1,18 @@
 import React, { useEffect, useState, useMemo } from "react";
 import Table from "../../components/Table";
 import { useDispatch, useSelector } from "react-redux";
-import { setRoleData, setUserData, setUserDetail, setUserEdit } from "../../store/storeGlobal";
+import { setRoleData, setRoleDetail, setRoleEdit, setUserData, setUserDetail, setUserEdit } from "../../store/storeGlobal";
 import "./style.scss";
 import { GetData, GetShowData, deleteData } from "../../Service";
 import ModalCreate from "./ModalCreate";
+import ModalCreateRole from "./ModalCreateRole";
 
 const UserManagement = () => {
     const dispatch = useDispatch();
     const userData = useSelector((state) => state.global.userData);
     const roleData = useSelector((state) => state.global.roleData);
     const [isOpen, setIsOpen] = useState(false);
+    const [isOpenRole, setIsOpenRole] = useState(false);
 
     const columnsUser = useMemo(
         () => [
@@ -33,10 +35,6 @@ const UserManagement = () => {
             {
                 Header: "Role",
                 accessor: "role",
-            },
-            {
-                Header: "Description",
-                accessor: "description",
             }
         ],
         []
@@ -95,11 +93,26 @@ const UserManagement = () => {
         setIsOpen(true)
     }
 
-    const showCreate = async () => {
+    const showCreate = () => {
         dispatch(setUserDetail(null));
         setIsOpen(true)
     }
 
+    const showEditRole = async (value) => {
+        await dispatch(setRoleEdit(value));
+        await GetShowData({
+            dispatch,
+            setData: setRoleDetail,
+            urlApi: 'role',
+            param: value
+        })
+        setIsOpenRole(true)
+    }
+
+    const showCreateRole = () => {
+        dispatch(setRoleDetail(null));
+        setIsOpenRole(true)
+    }
 
     return (
         <>
@@ -108,10 +121,10 @@ const UserManagement = () => {
                     <span className="d-none d-md-block"> Create New User</span>
                     <i className="ri-add-line mx-1 d-block d-md-none" />
                 </button>
-                {/* <button className="btn btn-custom" onClick={() => showCreate()}>
+                <button className="btn btn-custom" onClick={() => showCreateRole()}>
                     <span className="d-none d-md-block"> Create New Role</span>
                     <i className="ri-add-line mx-1 d-block d-md-none" />
-                </button> */}
+                </button>
             </div>
             <div className="row">
                 <div className="col-12 col-md-6">
@@ -124,7 +137,6 @@ const UserManagement = () => {
                             setIsOpen={setIsOpen}
                         />
                     )}
-
                     <Table
                         showEdit={showEdit}
                         columns={columnsUser}
@@ -136,19 +148,20 @@ const UserManagement = () => {
                     <div className="d-flex justify-content-between align-items-center">
                         <div className="title-module">Data Role</div>
                     </div>
-                    {/* <ModalCreate
-                        isOpen={isOpen}
-                        setIsOpen={setIsOpen}
-                    /> */}
+                    {isOpenRole && (
+                        <ModalCreateRole
+                            isOpen={isOpenRole}
+                            setIsOpen={setIsOpenRole}
+                        />
+                    )}
                     <Table
-                        showEdit={showEdit}
+                        showEdit={showEditRole}
                         columns={columnsRole}
                         data={roleData?.data}
                         deleteItem={deleteItemRole}
                     />
                 </div>
             </div>
-
         </>
     );
 };

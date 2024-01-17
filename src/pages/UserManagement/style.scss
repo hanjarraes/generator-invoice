@@ -10,6 +10,61 @@
         font-weight: bold;
     }
 
+    .switch-module {
+
+        .switch-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            align-items: center;
+
+            input[type="checkbox"] {
+                height: 0;
+                width: 0;
+                visibility: hidden;
+                margin-right: 10px;
+            }
+
+            label {
+                cursor: pointer;
+                text-indent: -9999px;
+                width: 50px;
+                height: 27px;
+                background: grey;
+                display: block;
+                border-radius: 100px;
+                position: relative;
+
+                &:after {
+                    content: '';
+                    position: absolute;
+                    top: 3px;
+                    left: 5px;
+                    width: 20px;
+                    height: 20px;
+                    background: #fff;
+                    border-radius: 20px;
+                    transition: 0.3s;
+                }
+            }
+
+            input:checked+label {
+                background: #bf0000b7;
+
+                &:after {
+                    left: calc(100% - 3px);
+                    transform: translateX(-100%);
+                }
+            }
+
+            label:active:after {
+                width: 50px;
+            }
+        }
+
+
+    }
+
     .footer-btn {
         display: flex;
         justify-content: space-between;

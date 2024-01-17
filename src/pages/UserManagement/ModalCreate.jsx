@@ -238,7 +238,7 @@ const ModalCreate = ({ isOpen, setIsOpen }) => {
                         onClick={handleClose}>
                         Cancel
                     </button>
-                    <button className="btn btn-submit" onClick={(e) => submitInvoice(e)}>Submit</button>
+                    <button className="btn btn-submit me-2" onClick={(e) => submitInvoice(e)}>Submit</button>
                 </div>
             </div>
         </Dialog>

@@ -7,7 +7,8 @@ const roleController = require('./role.controllers')
 
 router.route('/role')
     .get(cookieJwtAuth, roleController.index)
-    .post(cookieJwtAuth, roleController.store);
+    .post(cookieJwtAuth, roleController.store)
+    .delete(cookieJwtAuth, roleController.delete);
 
 router.get('/role/:id/', cookieJwtAuth, roleController.show);
 router.put('/role/:id/', cookieJwtAuth, roleController.update);

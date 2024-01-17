@@ -107,13 +107,14 @@ module.exports = {
         const id = req.params.id;
         const { role, description, module } = req.body;
         const { userId, username } = req.session;
-
+        
         const newDataRespon = {
             id: id,
             role: role,
             description: description,
             module: module
         }
+
 
         try {
             const existingRole = await UserRole.findByPk(id, { include: RoleModule });
@@ -177,11 +178,10 @@ module.exports = {
     },
 
     delete: async (req, res) => {
-        const roleId = req.params.id;
         const { userId, username } = req.session;
-
+        const { id } = req.body;
         try {
-            const userRole = await UserRole.findByPk(roleId);
+            const userRole = await UserRole.findByPk(id);
 
             if (!userRole) {
                 return res.status(404).json({
@@ -192,22 +192,23 @@ module.exports = {
             }
 
             // Find and delete associated Role Modules first
-            const deletedModules = await RoleModule.destroy({ where: { users_role_id: roleId } });
+           await RoleModule.destroy({ where: { users_role_id: id } });
 
             // After Role Modules are deleted, delete the User Role
-            await UserRole.destroy({ where: { id: roleId } });
+            await UserRole.destroy({ where: { id: id } });
 
             // Log the deletion activity
             await UserLog.create({
                 user_id: userId,
-                activity: `Deleting User Role ID ${roleId} by ${username}`
+                activity: `Deleting User Role ID ${id} by ${username}`
+            });
+
+            const userRoleData = await UserRole.findAll({
+                include: RoleModule,
             });
 
             res.json({
-                data: {
-                    deletedUserRole: userRole,
-                    deletedRoleModules: deletedModules,
-                },
+                data: userRoleData,
                 status: 200,
                 message: 'User Role and associated Role Modules deleted successfully',
                 url: req.url,

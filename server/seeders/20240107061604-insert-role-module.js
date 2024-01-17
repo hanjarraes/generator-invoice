@@ -4,50 +4,50 @@ module.exports = {
     return queryInterface.bulkInsert('tb_role_module', [
       {
         users_role_id: 1,
-        module: 'Module A',
-        description: 'Description for Module A',
+        module: 'Dashboard',
+        description: 'Dashboard displays whether invoice data is OK or not',
         created_at: new Date(),
         updated_at: new Date()
       },
       {
-        users_role_id: 2, 
-        module: 'Module B',
-        description: 'Description for Module B',
-        created_at: new Date(),
-        updated_at: new Date()
-      },
-      {
-        users_role_id: 1,
-        module: 'Module C',
-        description: 'Description for Module C',
-        created_at: new Date(),
-        updated_at: new Date()
-      },
-      {
-        users_role_id: 2, 
-        module: 'Module D',
-        description: 'Description for Module D',
+        users_role_id: 1, 
+        module: 'Data Invoice',
+        description: 'Invoice Data displays Invoice Data and also Inoive Creation etc',
         created_at: new Date(),
         updated_at: new Date()
       },
       {
         users_role_id: 1,
-        module: 'Module E',
-        description: 'Description for Module E',
+        module: 'User Management',
+        description: 'User Data displays User Data and also User Creation etc',
+        created_at: new Date(),
+        updated_at: new Date()
+      },
+      {
+        users_role_id: 2,
+        module: 'Dashboard',
+        description: 'Dashboard displays whether invoice data is OK or not',
         created_at: new Date(),
         updated_at: new Date()
       },
       {
         users_role_id: 2, 
-        module: 'Module F',
-        description: 'Description for Module F',
+        module: 'Data Invoice',
+        description: 'Invoice Data displays Invoice Data and also Inoive Creation etc',
         created_at: new Date(),
         updated_at: new Date()
       },
       {
-        users_role_id: 1,
-        module: 'Module G',
-        description: 'Description for Module G',
+        users_role_id: 3,
+        module: 'Dashboard',
+        description: 'Dashboard displays whether invoice data is OK or not',
+        created_at: new Date(),
+        updated_at: new Date()
+      },
+      {
+        users_role_id: 3, 
+        module: 'Data Invoice',
+        description: 'Invoice Data displays Invoice Data and also Inoive Creation etc',
         created_at: new Date(),
         updated_at: new Date()
       },

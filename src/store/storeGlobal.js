@@ -27,6 +27,12 @@ const globalSlice = createSlice({
     setUserEdit: (state, action) => {
       state.userEdit = action.payload;
     },
+    setRoleDetail: (state, action) => {
+      state.roleDetail = action.payload;
+    },
+    setRoleEdit: (state, action) => {
+      state.roleEdit = action.payload;
+    },
 
     // invoice
     setInvoiceData: (state, action) => {
@@ -53,6 +59,8 @@ export const {
   setInvoiceDetail,
   setUserDetail,
   setUserEdit,
+  setRoleDetail,
+  setRoleEdit,
   setCurrency
 } = globalSlice.actions;
 export default globalSlice.reducer;

@@ -3,14 +3,20 @@ module.exports = {
   async up(queryInterface, Sequelize) {
     return queryInterface.bulkInsert('tb_users_role', [
       {
+        role: 'Super Admin',
+        description: 'Full control, global configuration, system security.',
+        created_at: new Date(),
+        updated_at: new Date()
+      },
+      {
         role: 'Admin',
-        description: 'Administrator role',
+        description: 'Specific control, user management, maintenance.',
         created_at: new Date(),
         updated_at: new Date()
       },
       {
         role: 'User',
-        description: 'Regular user role',
+        description: 'Limited access rights, use the system according to permission.',
         created_at: new Date(),
         updated_at: new Date()
       },
