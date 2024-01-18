@@ -19,6 +19,11 @@ const Sidebar = () => {
     await logoutUser({ dispatch, setData: setUser, navigate })
   };
 
+  const storedJsonString = localStorage.getItem('userLogin');
+  const dataUserLogin = JSON.parse(storedJsonString);
+  const modulesUser  = dataUserLogin.data.modules
+  const filteredRoutes = appRoutes.filter(data => modulesUser.includes(data.sidebarProps.displayText));
+
   return (
     <Drawer
       variant="permanent"
@@ -48,7 +53,7 @@ const Sidebar = () => {
             />
           </Stack>
         </Toolbar>
-        {appRoutes.map((route, index) =>
+        {filteredRoutes.map((route, index) =>
           route.sidebarProps ? (
             route.child ? (
               <SidebarItemCollapse item={route} key={index} />

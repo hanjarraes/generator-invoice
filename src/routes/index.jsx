@@ -4,14 +4,21 @@ import PageWrapper from "../container/PageWrapper";
 import appRoutes from "./appRoutes";
 
 const generateRoute = (routes) => {
-  return routes.map((route, index) => (
+  const storedJsonString = localStorage.getItem('userLogin');
+  const dataUserLogin = JSON.parse(storedJsonString);
+  const modulesUser = dataUserLogin.data.modules
+  const filteredRoutes = routes.filter(data => modulesUser.includes(data.sidebarProps.displayText));
+
+  return filteredRoutes.map((route, index) => (
     route.index ? (
       <Route
         index
         path={route.path}
-        element={<PageWrapper state={route.state}>
-          {route.element}
-        </PageWrapper>}
+        element={
+          <PageWrapper state={route.state}>
+            {route.element}
+          </PageWrapper>
+        }
         key={index}
       />
     ) : (

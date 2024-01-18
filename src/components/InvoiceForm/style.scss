@@ -51,6 +51,7 @@ hr {
   }
 
   tr {
+
     th:first-child,
     td:first-child {
       padding-left: 0;
@@ -61,6 +62,11 @@ hr {
       padding-right: 0;
     }
   }
+}
+
+.img-signarute {
+  position: absolute;
+  right: 61px;
 }
 
 .btn-primary {

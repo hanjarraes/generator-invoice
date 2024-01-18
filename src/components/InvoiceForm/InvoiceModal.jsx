@@ -9,10 +9,11 @@ import { BiPaperPlane, BiSolidCloudDownload } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Logo from '../../logo-Alurnews-02.png'
+import Signature from '../../assets/img/Logo/signature.png'
 import "./style.scss";
-import { postData, putData } from '../../Service';
+import { GetData, postData, putData } from '../../Service';
 import { formatDate, formatInvoiceNumber, formatPayload, GenerateInvoice } from './service';
-import { setInvoiceEdit } from '../../store/storeGlobal';
+import { setInvoiceData, setInvoiceEdit } from '../../store/storeGlobal';
 
 const InvoiceModal = ({
   showModal,
@@ -31,11 +32,13 @@ const InvoiceModal = ({
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const invoiceEdit = useSelector((state) => state.global.invoiceEdit);
+  const user = useSelector((state) => state.login.user);
+  const dataUser = user.data
 
-  const submitInvoice = (e) => {
+  const submitInvoice = async (e) => {
     const payload = formatPayload({ mainState, items })
     if (invoiceDetail) {
-      putData({
+      await putData({
         dispatch,
         setData: setInvoiceEdit,
         urlApi: 'invoice',
@@ -43,15 +46,39 @@ const InvoiceModal = ({
         param: invoiceEdit
       })
     } else {
-      postData({
+      await postData({
         urlApi: 'invoice',
         payload
       })
     }
+    await GetData({ dispatch, setData: setInvoiceData, urlApi: 'invoice' })
     closeModal()
     navigate('/data-invoice')
     e.preventDefault();
   };
+
+  const okInvoice = async (e) => {
+    const payload = formatPayload({ mainState, items })
+    payload.status = "Ok"
+    payload.allInfo.status = "Ok"
+    payload.allInfo.invoice_status_id = 1
+    payload.allInfo.invoiceNo = invoiceNumber
+    payload.invoice_no = invoiceNumber
+      await putData({
+        dispatch,
+        setData: setInvoiceEdit,
+        urlApi: 'invoice',
+        payload,
+        param: invoiceEdit
+      })
+    await GetData({ dispatch, setData: setInvoiceData, urlApi: 'invoice' })
+    closeModal()
+    e.preventDefault();
+  };
+
+  const isAdmin = dataUser.role === 'Super Admin' || dataUser.role === 'Admin';
+
+
 
   return (
     <div>
@@ -161,6 +188,7 @@ const InvoiceModal = ({
               <Col md={4} className='modal-signature'>
                 <div>Thanks You & Regards, </div>
                 <span>AlurNews.com</span>
+                {mainState.status === 'Ok' ? <img src={Signature} alt='signature' className='img-signarute' /> : ''}
                 <div style={{ marginTop: '100px' }}>Harianto</div>
                 <div>Direktur</div>
               </Col>
@@ -189,10 +217,17 @@ const InvoiceModal = ({
               (
                 <>
                   <Col md={6}>
-                    <Button variant="primary" className="d-block w-100" onClick={closeModal} onKeyDown={closeModal} onKeyUp={closeModal}>
-                      <BiPaperPlane style={{ width: '15px', height: '15px', marginTop: '-3px' }} className="me-2" />Close
+                    <Button variant="secondary" className="d-block w-100" onClick={closeModal} onKeyDown={closeModal} onKeyUp={closeModal}>
+                      Close
                     </Button>
                   </Col>
+                  {isAdmin && (
+                    <Col md={6}>
+                      <Button variant="primary" className="d-block w-100" onClick={(e) => okInvoice(e)}>
+                        <BiPaperPlane style={{ width: '15px', height: '15px', marginTop: '-3px' }} className="me-2" />Ok Invoice
+                      </Button>
+                    </Col>
+                  )}
                 </>
               )
               :

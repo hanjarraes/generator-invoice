@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import InvoiceModal from "../../components/InvoiceForm/InvoiceModal";
 import { useDispatch, useSelector } from "react-redux";
-import { setInvoiceData } from "../../store/storeGlobal";
+import { setInvoiceData, setInvoiceEdit } from "../../store/storeGlobal";
 import "./style.scss";
 import { GetData } from "../../Service";
 
@@ -13,7 +13,8 @@ const Dashboard = () => {
   const closeModal = () => {
     setIsOpen(false)
   }
-  const openModal = (items) => {
+  const openModal = async (items, id) => {
+    await dispatch(setInvoiceEdit(id));
     setShowDetail(items)
     setIsOpen(true)
   }
@@ -27,7 +28,7 @@ const Dashboard = () => {
       <div className="d-flex flex-wrap justify-content-around">
         {invoiceData?.data.map((item, idx) => {
           return (
-            <div className="card-status" key={item.invoice_no + idx} onClick={() => openModal(item.allInfo)}>
+            <div className="card-status" key={item.invoice_no + idx} onClick={() => openModal(item.allInfo, item.id)}>
               <div className={`title-${item.status}`}>
                 {item.status}
               </div>

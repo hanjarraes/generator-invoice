@@ -6,7 +6,10 @@ import Slide from '@mui/material/Slide';
 import "./style.scss";
 import InvoiceModal from "../InvoiceForm/InvoiceModal";
 import { formatDate } from "./service";
+import { useDispatch } from "react-redux";
+
 import * as XLSX from "xlsx";
+import { setInvoiceEdit } from "../../store/storeGlobal";
 
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -14,6 +17,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 const Table = ({ columns, data, deleteItem, showEdit, showInvoice }) => {
+  const dispatch = useDispatch();
   const [sortColumn, setSortColumn] = useState(null);
   const [sortDirection, setSortDirection] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -74,7 +78,8 @@ const Table = ({ columns, data, deleteItem, showEdit, showInvoice }) => {
   const closeModal = () => {
     setIsOpen(false)
   }
-  const openModal = (items) => {
+  const openModal = async (items, id) => {
+    await dispatch(setInvoiceEdit(id));
     setShowDetail(items)
     setIsOpen(true)
   }
@@ -152,7 +157,7 @@ const Table = ({ columns, data, deleteItem, showEdit, showInvoice }) => {
                 {columns?.map((column) => {
                   if (column.accessor === "status") {
                     return (
-                      <td onClick={() => openModal(item.allInfo)} key={`${column.accessor}-${index}`}>
+                      <td onClick={() => openModal(item.allInfo, item.id)} key={`${column.accessor}-${index}`}>
                         <div className={`status-${item[column.accessor]}`}>
                           {item[column.accessor]}
                         </div>
@@ -161,20 +166,20 @@ const Table = ({ columns, data, deleteItem, showEdit, showInvoice }) => {
                   }
                   if (column.accessor === "total") {
                     return (
-                      <td onClick={() => openModal(item.allInfo)} key={`${column.accessor}-${index}`}>
+                      <td onClick={() => openModal(item.allInfo, item.id)} key={`${column.accessor}-${index}`}>
                         {item.allInfo.currency + ' ' + item[column.accessor]}
                       </td>
                     );
                   }
                   if (column.accessor === "current_date" || column.accessor === "due_date") {
                     return (
-                      <td onClick={() => openModal(item.allInfo)} key={`${column.accessor}-${index}`}>
+                      <td onClick={() => openModal(item.allInfo, item.id)} key={`${column.accessor}-${index}`}>
                         {formatDate(item[column.accessor])}
                       </td>
                     );
                   }
                   return (
-                    <td onClick={() => openModal(item.allInfo)} key={`${column.accessor}-${index}`}>
+                    <td onClick={() => openModal(item.allInfo, item.id)} key={`${column.accessor}-${index}`}>
                       {item[column.accessor]}
                     </td>
                   );

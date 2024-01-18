@@ -9,7 +9,6 @@ import sizeConfigs from "../../configs/sizeConfigs";
 import Sidebar from "../common/Sidebar";
 import Modal from "../../components/Modal";
 import { toast } from 'react-toastify';
-import { logoutUser } from "../../Service";
 import { setUser } from "../../store/storeLogin";
 
 const TheLayout = () => {
@@ -21,20 +20,6 @@ const TheLayout = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((state) => state.login.user);
-  // const [expiredTime, setExpiredTime] = useState(false);
-
-  // useEffect(() => {
-  //   let timer = null;
-  //   const handleMouseMove = () => {
-  //     if (timer) clearTimeout(timer);
-  //     timer = setTimeout(() => {
-  //       setExpiredTime(true);
-  //       const payload = { last_access: new Date().toLocaleString() };
-  //       axios.post(`auth/logout`, payload);
-  //     }, 7500000);
-  //   };
-  //   window.addEventListener("mousemove", handleMouseMove);
-  // }, []);
 
   if (user) {
     axios.defaults.baseURL = process.env.REACT_APP_API_URL;

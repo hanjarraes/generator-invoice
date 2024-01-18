@@ -324,6 +324,7 @@ module.exports = {
                     { model: InvoiceCurrency },
                     { model: InvoiceItem },
                 ],
+                order: [['currentDate', 'DESC']],
             });
             const newResponseData = invoices.map(invoice => ({
                 id: invoice.id,

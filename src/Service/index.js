@@ -5,8 +5,14 @@ export const LoginUser = async ({ payload, dispatch, setData, navigate }) => {
     try {
         const response = await axios.post(`${process.env.REACT_APP_API_URL}/login`, payload);
         dispatch(setData(response.data));
-        toast.success('Welcome Back 😉');
+        const userLogin =  JSON.stringify(response.data);
+        const token = response.data.token
+        localStorage.setItem('Token', token);
+        localStorage.setItem('userLogin', userLogin);
         navigate('/')
+        // await window.location.reload()
+        toast.success('Welcome Back 😉');
+
     } catch (error) {
         if (error.response) {
             toast.error(` ${error.response.data.error} 🫤`);
