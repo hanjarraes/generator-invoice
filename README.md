@@ -21,6 +21,9 @@ npm install
 npm start / npm run build
 ```
 
+- run Docker
+docker-compose --env-file ./server/.env up
+
 ### To-Do
 - [x] Finish parsing data into Preview Modal
 

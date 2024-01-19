@@ -225,9 +225,9 @@ const InvoiceForm = ({ invoiceDetail }) => {
                   />
                   <Form.Control
                     className="form-control-invoice my-2"
-                    placeholder={"Email address"}
+                    placeholder={"Email address Or Description"}
                     value={mainState.billToEmail}
-                    type="email"
+                    type="text"
                     name="billToEmail"
                     onChange={(event) => editField({ event, setMainState, mainState, items })}
                     autoComplete="email"

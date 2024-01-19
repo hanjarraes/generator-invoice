@@ -22,7 +22,7 @@ const Invoice = () => {
         accessor: "billTo",
       },
       {
-        Header: "Email",
+        Header: "Email or Description",
         accessor: "billToEmail",
       },
       {

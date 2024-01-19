@@ -101,14 +101,14 @@ const InvoiceModal = ({
               <Col md={4}>
                 <div className="fw-bold">Billed to:</div>
                 <div>{mainState.billTo || ''}</div>
-                <div>{mainState.billToAddress || ''}</div>
                 <div>{mainState.billToEmail || ''}</div>
+                <div>{mainState.billToAddress || ''}</div>
               </Col>
               <Col md={4}>
                 <div className="fw-bold">Billed From:</div>
                 <div>{mainState.billFrom || ''}</div>
-                <div>{mainState.billFromAddress || ''}</div>
                 <div>{mainState.billFromEmail || ''}</div>
+                <div>{mainState.billFromAddress || ''}</div>
               </Col>
               <Col md={4}>
                 <div className="fw-bold mt-2">Date Of Issue:</div>
