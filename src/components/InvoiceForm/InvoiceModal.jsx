@@ -32,8 +32,9 @@ const InvoiceModal = ({
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const invoiceEdit = useSelector((state) => state.global.invoiceEdit);
+  const [withSignature, setwithSignature] = React.useState(false)
   const user = useSelector((state) => state.login.user);
-  const dataUser = user.data
+  const dataUser = user?.data
 
   const submitInvoice = async (e) => {
     const payload = formatPayload({ mainState, items })
@@ -64,21 +65,19 @@ const InvoiceModal = ({
     payload.allInfo.invoice_status_id = 1
     payload.allInfo.invoiceNo = invoiceNumber
     payload.invoice_no = invoiceNumber
-      await putData({
-        dispatch,
-        setData: setInvoiceEdit,
-        urlApi: 'invoice',
-        payload,
-        param: invoiceEdit
-      })
+    await putData({
+      dispatch,
+      setData: setInvoiceEdit,
+      urlApi: 'invoice',
+      payload,
+      param: invoiceEdit
+    })
     await GetData({ dispatch, setData: setInvoiceData, urlApi: 'invoice' })
     closeModal()
     e.preventDefault();
   };
 
   const isAdmin = dataUser.role === 'Super Admin' || dataUser.role === 'Admin';
-
-
 
   return (
     <div>
@@ -188,7 +187,7 @@ const InvoiceModal = ({
               <Col md={4} className='modal-signature'>
                 <div>Thanks You & Regards, </div>
                 <span>AlurNews.com</span>
-                {mainState.status === 'Ok' ? <img src={Signature} alt='signature' className='img-signarute' /> : ''}
+                {mainState.status === 'Ok' && withSignature ? <img src={Signature} alt='signature' className='img-signarute' /> : ''}
                 <div style={{ marginTop: '100px' }}>Harianto</div>
                 <div>Direktur</div>
               </Col>
@@ -197,57 +196,75 @@ const InvoiceModal = ({
           </div>
         </div>
         <div className="pb-4 px-4">
-          <Row>
-            {tableDetail ? mainState.status === 'Ok' ?
-              (
-                <>
-                  <Col md={6}>
-                    <Button variant="secondary" className="d-block w-100" onClick={closeModal} onKeyDown={closeModal} onKeyUp={closeModal}>
-                      <BiPaperPlane style={{ width: '15px', height: '15px', marginTop: '-3px' }} className="me-2" />Close
-                    </Button>
-                  </Col>
-                  <Col md={6}>
-                    <Button variant="primary" className="d-block w-100" onClick={() => GenerateInvoice(mainState)}>
-                      <BiSolidCloudDownload style={{ width: '15px', height: '15px', marginTop: '-3px' }} className="me-2" />Download
-                    </Button>
-                  </Col>
-                </>
-              )
-              :
-              (
+          {tableDetail ? mainState.status === 'Ok' ? (
+            <div className='row'>
+              <div className='col-6'>
+                <div className="switch-item">
+                  <div>With Signature and Stampel</div>
+                  <input
+                    type="checkbox"
+                    id={`signature-yes`}
+                    checked={withSignature}
+                    name="checkbox"
+                    onClick={() => setwithSignature(!withSignature)}
+                  />
+                  <label for={`signature-yes`}>Toggle</label>
+                </div>
+              </div>
+            </div>
+          ) : '' : ''}
+          < Row >
+            {
+              tableDetail ? mainState.status === 'Ok' ?
+                (
+                  <>
+                    <Col md={6}>
+                      <Button variant="secondary" className="d-block w-100" onClick={closeModal} onKeyDown={closeModal} onKeyUp={closeModal}>
+                        <BiPaperPlane style={{ width: '15px', height: '15px', marginTop: '-3px' }} className="me-2" />Close
+                      </Button>
+                    </Col>
+                    <Col md={6}>
+                      <Button variant="primary" className="d-block w-100" onClick={() => GenerateInvoice(mainState)}>
+                        <BiSolidCloudDownload style={{ width: '15px', height: '15px', marginTop: '-3px' }} className="me-2" />Download
+                      </Button>
+                    </Col>
+                  </>
+                )
+                :
+                (
+                  <>
+                    <Col md={6}>
+                      <Button variant="secondary" className="d-block w-100" onClick={closeModal} onKeyDown={closeModal} onKeyUp={closeModal}>
+                        Close
+                      </Button>
+                    </Col>
+                    {isAdmin && (
+                      <Col md={6}>
+                        <Button variant="primary" className="d-block w-100" onClick={(e) => okInvoice(e)}>
+                          <BiPaperPlane style={{ width: '15px', height: '15px', marginTop: '-3px' }} className="me-2" />Ok Invoice
+                        </Button>
+                      </Col>
+                    )}
+                  </>
+                )
+                :
                 <>
                   <Col md={6}>
                     <Button variant="secondary" className="d-block w-100" onClick={closeModal} onKeyDown={closeModal} onKeyUp={closeModal}>
                       Close
                     </Button>
                   </Col>
-                  {isAdmin && (
-                    <Col md={6}>
-                      <Button variant="primary" className="d-block w-100" onClick={(e) => okInvoice(e)}>
-                        <BiPaperPlane style={{ width: '15px', height: '15px', marginTop: '-3px' }} className="me-2" />Ok Invoice
-                      </Button>
-                    </Col>
-                  )}
+                  <Col md={6}>
+                    <Button variant="primary" className="d-block w-100" onClick={(e) => submitInvoice(e)}>
+                      <BiPaperPlane style={{ width: '15px', height: '15px', marginTop: '-3px' }} className="me-2" />Send Invoice
+                    </Button>
+                  </Col>
                 </>
-              )
-              :
-              <>
-                <Col md={6}>
-                  <Button variant="secondary" className="d-block w-100" onClick={closeModal} onKeyDown={closeModal} onKeyUp={closeModal}>
-                    Close
-                  </Button>
-                </Col>
-                <Col md={6}>
-                  <Button variant="primary" className="d-block w-100" onClick={(e) => submitInvoice(e)}>
-                    <BiPaperPlane style={{ width: '15px', height: '15px', marginTop: '-3px' }} className="me-2" />Send Invoice
-                  </Button>
-                </Col>
-              </>
             }
           </Row>
         </div>
-      </Modal>
-    </div>
+      </Modal >
+    </div >
   );
 }
 

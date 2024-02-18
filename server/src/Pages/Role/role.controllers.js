@@ -191,13 +191,13 @@ module.exports = {
                 });
             }
 
-            // Find and delete associated Role Modules first
+            // Temukan dan hapus Modul Peran terkait terlebih dahulu
            await RoleModule.destroy({ where: { users_role_id: id } });
 
-            // After Role Modules are deleted, delete the User Role
+            // Setelah Modul Peran dihapus, hapus Peran Pengguna
             await UserRole.destroy({ where: { id: id } });
 
-            // Log the deletion activity
+            // Catat aktivitas penghapusan
             await UserLog.create({
                 user_id: userId,
                 activity: `Deleting User Role ID ${id} by ${username}`
