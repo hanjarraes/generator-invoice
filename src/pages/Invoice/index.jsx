@@ -10,6 +10,8 @@ const Invoice = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate()
   const invoiceData = useSelector((state) => state.global.invoiceData);
+  const user = useSelector((state) => state.login.user);
+  const UserActive = user?.data?.name
 
   const columns = React.useMemo(
     () => [
@@ -76,13 +78,19 @@ const Invoice = () => {
 
   return (
     <>
+
       <div className="d-flex justify-content-between align-items-center">
         <div className="title-module">Data Invoice</div>
-        <button className="btn btn-custom" onClick={() => showCreate()}>
-          <span className="d-none d-md-block"> Create New Invoice</span>
-          <i className="ri-add-line mx-1 d-block d-md-none" />
-        </button>
+        {
+          UserActive !== 'admin' ?
+            <button className="btn btn-custom" onClick={() => showCreate()}>
+              <span className="d-none d-md-block"> Create New Invoice</span>
+              <i className="ri-add-line mx-1 d-block d-md-none" />
+            </button>
+            : ""
+        }
       </div>
+
       <Table
         showEdit={showEdit}
         columns={columns}

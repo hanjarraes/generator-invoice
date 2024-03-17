@@ -4,9 +4,9 @@ import { toast } from 'react-toastify';
 export const LoginUser = async ({ payload, dispatch, setData, navigate }) => {
     try {
         const response = await axios.post(`${process.env.REACT_APP_API_URL}/login`, payload);
-        dispatch(setData(response.data));
-        const userLogin =  JSON.stringify(response.data);
-        const token = response.data.token
+        dispatch(setData(response?.data));
+        const userLogin =  JSON.stringify(response?.data);
+        const token = response?.data?.token
         localStorage.setItem('Token', token);
         localStorage.setItem('userLogin', userLogin);
         navigate('/')

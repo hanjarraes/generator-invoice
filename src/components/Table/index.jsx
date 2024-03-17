@@ -6,7 +6,7 @@ import Slide from '@mui/material/Slide';
 import "./style.scss";
 import InvoiceModal from "../InvoiceForm/InvoiceModal";
 import { formatDate } from "./service";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import * as XLSX from "xlsx";
 import { setInvoiceEdit } from "../../store/storeGlobal";
@@ -26,6 +26,8 @@ const Table = ({ columns, data, deleteItem, showEdit, showInvoice }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchValue, setSearchValue] = useState("");
   const [showDetail, setShowDetail] = useState();
+  const user = useSelector((state) => state.login.user);
+  const UserActive = user?.data?.name
   const itemsPerPage = 10;
 
   const sortedData = sortColumn
@@ -148,7 +150,11 @@ const Table = ({ columns, data, deleteItem, showEdit, showInvoice }) => {
                   {column.Header}
                 </th>
               ))}
-              <th>Aksi</th>
+              {
+                UserActive !== 'admin' ?
+                  <th>Aksi</th>
+                  : ""
+              }
             </tr>
           </thead>
           <tbody>
@@ -184,12 +190,16 @@ const Table = ({ columns, data, deleteItem, showEdit, showInvoice }) => {
                     </td>
                   );
                 })}
-                <td>
-                  <div>
-                    <EditIcon onClick={() => showEdit(item.id)} className="edit-icon" />
-                    <DeleteIcon onClick={() => handleDelete(item.id)} className="delete-icon" />
-                  </div>
-                </td>
+                {
+                  UserActive !== 'admin' ?
+                    <td>
+                      <div>
+                        <EditIcon onClick={() => showEdit(item.id)} className="edit-icon" />
+                        <DeleteIcon onClick={() => handleDelete(item.id)} className="delete-icon" />
+                      </div>
+                    </td>
+                    : ""
+                }
               </tr>
             ))}
           </tbody>

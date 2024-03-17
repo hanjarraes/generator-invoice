@@ -11,8 +11,10 @@ const UserManagement = () => {
     const dispatch = useDispatch();
     const userData = useSelector((state) => state.global.userData);
     const roleData = useSelector((state) => state.global.roleData);
+    const user = useSelector((state) => state.login.user);
     const [isOpen, setIsOpen] = useState(false);
     const [isOpenRole, setIsOpenRole] = useState(false);
+    const UserActive = user?.data?.name
 
     const columnsUser = useMemo(
         () => [
@@ -116,16 +118,20 @@ const UserManagement = () => {
 
     return (
         <>
-            <div className="d-flex justify-content-end align-items-center">
-                <button className="btn btn-custom me-3" onClick={() => showCreate()}>
-                    <span className="d-none d-md-block"> Create New User</span>
-                    <i className="ri-add-line mx-1 d-block d-md-none" />
-                </button>
-                <button className="btn btn-custom" onClick={() => showCreateRole()}>
-                    <span className="d-none d-md-block"> Create New Role</span>
-                    <i className="ri-add-line mx-1 d-block d-md-none" />
-                </button>
-            </div>
+            {UserActive !== 'admin' ?
+                <div className="d-flex justify-content-end align-items-center">
+                    <button className="btn btn-custom me-3" onClick={() => showCreate()}>
+                        <span className="d-none d-md-block"> Create New User</span>
+                        <i className="ri-add-line mx-1 d-block d-md-none" />
+                    </button>
+                    <button className="btn btn-custom" onClick={() => showCreateRole()}>
+                        <span className="d-none d-md-block"> Create New Role</span>
+                        <i className="ri-add-line mx-1 d-block d-md-none" />
+                    </button>
+                </div>
+                :
+                ""
+            }
             <div className="row">
                 <div className="col-12 col-md-6">
                     <div className="d-flex justify-content-between align-items-center">

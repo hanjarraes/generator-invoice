@@ -77,7 +77,26 @@ const InvoiceModal = ({
     e.preventDefault();
   };
 
-  const isAdmin = dataUser.role === 'Super Admin' || dataUser.role === 'Admin';
+  const RejectedInvoice = async (e) => {
+    const payload = formatPayload({ mainState, items })
+    payload.status = "Rejected"
+    payload.allInfo.status = "Rejected"
+    payload.allInfo.invoice_status_id = 3
+    payload.allInfo.invoiceNo = invoiceNumber
+    payload.invoice_no = invoiceNumber
+    await putData({
+      dispatch,
+      setData: setInvoiceEdit,
+      urlApi: 'invoice',
+      payload,
+      param: invoiceEdit
+    })
+    await GetData({ dispatch, setData: setInvoiceData, urlApi: 'invoice' })
+    closeModal()
+    e.preventDefault();
+  };
+
+  const isAdmin = dataUser?.role === 'Super Admin' || dataUser?.role === 'Admin';
 
   return (
     <div>
@@ -195,7 +214,7 @@ const InvoiceModal = ({
 
           </div>
         </div>
-        <div className="pb-4 px-4">
+        <div className="pb-4 px-1">
           {tableDetail ? mainState.status === 'Ok' ? (
             <div className='row'>
               <div className='col-6'>
@@ -213,7 +232,7 @@ const InvoiceModal = ({
               </div>
             </div>
           ) : '' : ''}
-          < Row >
+          <Row className='px-3'>
             {
               tableDetail ? mainState.status === 'Ok' ?
                 (
@@ -233,17 +252,24 @@ const InvoiceModal = ({
                 :
                 (
                   <>
-                    <Col md={6}>
+                    <Col md={4}>
                       <Button variant="secondary" className="d-block w-100" onClick={closeModal} onKeyDown={closeModal} onKeyUp={closeModal}>
                         Close
                       </Button>
                     </Col>
                     {isAdmin && (
-                      <Col md={6}>
-                        <Button variant="primary" className="d-block w-100" onClick={(e) => okInvoice(e)}>
-                          <BiPaperPlane style={{ width: '15px', height: '15px', marginTop: '-3px' }} className="me-2" />Ok Invoice
+                      <>
+                      <Col md={4}>
+                        <Button variant="danger" className="d-block w-100" onClick={(e) => RejectedInvoice(e)}>
+                          <BiPaperPlane style={{ width: '15px', height: '15px', marginTop: '-3px' }} className="me-2" />Rejected Invoice
                         </Button>
                       </Col>
+                      <Col md={4}>
+                      <Button variant="primary" className="d-block w-100" onClick={(e) => okInvoice(e)}>
+                        <BiPaperPlane style={{ width: '15px', height: '15px', marginTop: '-3px' }} className="me-2" />Ok Invoice
+                      </Button>
+                    </Col>
+                    </>
                     )}
                   </>
                 )

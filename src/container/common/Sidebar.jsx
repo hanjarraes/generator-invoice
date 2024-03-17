@@ -21,8 +21,8 @@ const Sidebar = () => {
 
   const storedJsonString = localStorage.getItem('userLogin');
   const dataUserLogin = JSON.parse(storedJsonString);
-  const modulesUser  = dataUserLogin.data.modules
-  const filteredRoutes = appRoutes.filter(data => modulesUser.includes(data.sidebarProps.displayText));
+  const modulesUser  = dataUserLogin?.data?.modules
+  const filteredRoutes = appRoutes.filter(data => modulesUser?.includes(data?.sidebarProps?.displayText));
 
   return (
     <Drawer

@@ -10,6 +10,9 @@ const Dashboard = () => {
   const [showDetail, setShowDetail] = useState();
   const invoiceData = useSelector((state) => state.global.invoiceData);
   const [isOpen, setIsOpen] = useState(false);
+  const [DataOk, setDataOk] = useState();
+  const [DataWait, setDataWait] = useState();
+  const [DataRejected, setDataRejected] = useState();
   const closeModal = () => {
     setIsOpen(false)
   }
@@ -23,24 +26,92 @@ const Dashboard = () => {
     GetData({ dispatch, setData: setInvoiceData, urlApi: 'invoice' })
   }, [dispatch]);
 
+  useEffect(() => {
+    const ItemOk = []
+    const ItemWait = []
+    const ItemRejected = []
+    invoiceData?.data.forEach(item => {
+      if (item.status === 'Ok') ItemOk.push(item)
+      if (item.status === 'Waiting') ItemWait.push(item)
+      if (item.status === 'Rejected') ItemRejected.push(item)
+
+    })
+    setDataOk(ItemOk)
+    setDataWait(ItemWait)
+    setDataRejected(ItemRejected)
+  }, [invoiceData?.data])
+
   return (
     <div className="container">
-      <div className="d-flex flex-wrap justify-content-around">
-        {invoiceData?.data.map((item, idx) => {
-          return (
-            <div className="card-status" key={item.invoice_no + idx} onClick={() => openModal(item.allInfo, item.id)}>
-              <div className={`title-${item.status}`}>
-                {item.status}
-              </div>
-              <div style={{ padding: '0px 10px', width: '180px' }}>
-                <div>{item.invoice_no}</div>
-                <div>{item.billTo}</div>
-                <div>{item.allInfo.currency + '. ' + item.total}</div>
-              </div>
-            </div>
-          )
-        })}
+      <div className="d-flex justify-content-around">
+        <div className="dashboard-card">
+          <div className="card-title">
+            Status OK
+            <span>{DataOk?.length}</span>
+          </div>
+          <div className="card-content">
+            {DataOk?.map((item, idx) => {
+              return (
+                <div className="card-status" key={item.invoice_no + idx} onClick={() => openModal(item.allInfo, item.id)}>
+                  <div className={`title-${item.status}`}>
+                    {item.status}
+                  </div>
+                  <div style={{ padding: '0px 10px', width: '180px' }}>
+                    <div>{item.invoice_no}</div>
+                    <div>{item.billTo}</div>
+                    <div>{item.allInfo.currency + '. ' + item.total}</div>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+        <div className="dashboard-card">
+        <div className="card-title">
+            Status Waiting
+            <span>{DataWait?.length}</span>
+          </div>
+          <div className="card-content">
+            {DataWait?.map((item, idx) => {
+              return (
+                <div className="card-status" key={item.invoice_no + idx} onClick={() => openModal(item.allInfo, item.id)}>
+                  <div className={`title-${item.status}`}>
+                    {item.status}
+                  </div>
+                  <div style={{ padding: '0px 10px', width: '180px' }}>
+                    <div>{item.invoice_no}</div>
+                    <div>{item.billTo}</div>
+                    <div>{item.allInfo.currency + '. ' + item.total}</div>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+        <div className="dashboard-card">
+        <div className="card-title">
+            Status Rejected
+            <span>{DataRejected?.length}</span>
+          </div>
+          <div className="card-content">
+            {DataRejected?.map((item, idx) => {
+              return (
+                <div className="card-status" key={item.invoice_no + idx} onClick={() => openModal(item.allInfo, item.id)}>
+                  <div className={`title-${item.status}`}>
+                    {item.status}
+                  </div>
+                  <div style={{ padding: '0px 10px', width: '180px' }}>
+                    <div>{item.invoice_no}</div>
+                    <div>{item.billTo}</div>
+                    <div>{item.allInfo.currency + '. ' + item.total}</div>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </div>
       </div>
+
       {showDetail &&
         <InvoiceModal
           showInvoice
