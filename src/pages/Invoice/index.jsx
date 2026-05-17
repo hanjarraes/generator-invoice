@@ -94,7 +94,7 @@ const Invoice = () => {
       <Table
         showEdit={showEdit}
         columns={columns}
-        data={invoiceData.data}
+        data={invoiceData?.data}
         deleteItem={deleteItem}
         showInvoice
       />

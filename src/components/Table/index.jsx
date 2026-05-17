@@ -158,7 +158,7 @@ const Table = ({ columns, data, deleteItem, showEdit, showInvoice }) => {
             </tr>
           </thead>
           <tbody>
-            {currentItems.map((item, index) => (
+            {currentItems?.map((item, index) => (
               <tr key={index}>
                 {columns?.map((column) => {
                   if (column.accessor === "status") {
